@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using FluentAssertions;
 using Xunit;
 
@@ -9,9 +11,11 @@ namespace Cshart.Tests
         [Fact]
         public void Test1()
         {
-            Chart.Expand<UnitTest1>(x => x.Test1())
-                .Should().Be(
-                @"digraph ""UnitTest1.Test1()"" { "+
+            var dotGraph = Chart.Expand<UnitTest1>(x => x.Test1());
+
+            // NOTE: it is really annoying to test this way
+            dotGraph.Should().StartWith(
+                @"digraph ""UnitTest1.Test1()"" { " +
                 @"""Test1""[label=""Test1"",shape=ellipse]; " +
                 @"""GetTypeFromHandle""[label=""GetTypeFromHandle"",shape=ellipse]; " +
                 @"""Test1"" -> ""GetTypeFromHandle""[arrowhead=normal]; " +
@@ -33,9 +37,24 @@ namespace Cshart.Tests
                 @"""Test1"" -> ""Should""[arrowhead=normal]; " +
                 @"""Empty""[label=""Empty"",shape=ellipse]; " +
                 @"""Test1"" -> ""Empty""[arrowhead=normal]; " +
-                @"""Be""[label=""Be"",shape=ellipse]; " +
-                @"""Test1"" -> ""Be""[arrowhead=normal]; " +
-                @"}");
+                @"""StartWith""[label=""StartWith"",shape=ellipse]; " +
+                @"""Test1"" -> ""StartWith""[arrowhead=normal]; ");
+
+            // NOTE: it could be useful to introduce tests,
+            // which compare the current emitted PNG
+            // to the latest one
+            var fileName = $"{nameof(UnitTest1)}.{nameof(Test1)}";
+            var path = fileName + ".dotgraph";
+            File.WriteAllText(path, dotGraph);
+            var pci =
+                new ProcessStartInfo
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    FileName = "dot",
+                    Arguments = $@"-T png -o {fileName+ ".png"} ""{path}""",
+                };
+            Process.Start(pci).WaitForExit();
         }
     }
 }
