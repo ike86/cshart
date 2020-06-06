@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cshart", "Cshart\Cshart.csproj", "{30B90ADA-3B94-47BF-971B-DB742A40924B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cshart.Tests", "Cshart.Tests\Cshart.Tests.csproj", "{716E1014-6A1D-4747-A5CF-0554E24256A3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30B90ADA-3B94-47BF-971B-DB742A40924B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B90ADA-3B94-47BF-971B-DB742A40924B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B90ADA-3B94-47BF-971B-DB742A40924B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B90ADA-3B94-47BF-971B-DB742A40924B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{716E1014-6A1D-4747-A5CF-0554E24256A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{716E1014-6A1D-4747-A5CF-0554E24256A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{716E1014-6A1D-4747-A5CF-0554E24256A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{716E1014-6A1D-4747-A5CF-0554E24256A3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34E762D6-873B-4877-A134-D0A3E7B8532D}
+	EndGlobalSection
+EndGlobal
