@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using DotNetGraph;
+using DotNetGraph.Edge;
+using DotNetGraph.Extensions;
+using DotNetGraph.Node;
 using Mono.Reflection;
 
 namespace Cshart
@@ -13,8 +15,13 @@ namespace Cshart
     {
         public static string Expand<T>(Expression<Action<T>> selector)
         {
-            var result = string.Empty;
+            var result = ExtractCalls(selector);
 
+            return ConvertToDotGraph(result);
+        }
+
+        private static IEnumerable<MethodCall> ExtractCalls<T>(Expression<Action<T>> selector)
+        {
             var expression = (MethodCallExpression)selector.Body;
             string name = expression.Method.Name;
 
@@ -25,24 +32,59 @@ namespace Cshart
 
                 if (methodInfo != null)
                 {
-                    var declaringType = methodInfo.DeclaringType;
-                    var parameters = methodInfo.GetParameters();
-
-                    result +=
-                        Environment.NewLine
-                        + string.Format(
-                            "{0}.{1}({2});",
-                            declaringType.FullName,
-                            methodInfo.Name,
-                            string.Join(
-                                ", ",
-                                parameters
-                                .Select(p => p.ParameterType.FullName + " " + p.Name)
-                                .ToArray()));
+                    yield return new MethodCall(methodBase, methodInfo);
                 }
             }
+        }
 
-            return result;
+        private static string ConvertToDotGraph(IEnumerable<MethodCall> methodCalls)
+        {
+            methodCalls = methodCalls.ToArray();
+            var graph =
+                new DotGraph(
+                    $"{methodCalls.First().Caller.DeclaringType.Name}.{methodCalls.First().Caller.Name}()",
+                    directed: true);
+
+            graph.Elements.Add(
+                new DotNode
+                {
+                    Identifier = methodCalls.First().Caller.Name,
+                    Label = methodCalls.First().Caller.Name,
+                    Shape = DotNodeShape.Ellipse,
+                });
+
+            foreach (var call in methodCalls)
+            {
+                graph.Elements.Add(
+                    new DotNode
+                    {
+                        Identifier = call.Callee.Name,
+                        Label = call.Callee.Name,
+                        Shape = DotNodeShape.Ellipse,
+                    });
+
+                graph.Elements.Add(
+                    new DotEdge(
+                        left: methodCalls.First().Caller.Name,
+                        right: call.Callee.Name)
+                    {
+                        ArrowHead = DotEdgeArrowType.Normal
+                    });
+            }
+
+            return graph.Compile();
+        }
+
+        private class MethodCall
+        {
+            public MethodCall(MethodInfo caller, MethodInfo callee)
+            {
+                Caller = caller;
+                Callee = callee;
+            }
+
+            public MethodInfo Caller { get; }
+            public MethodInfo Callee { get; }
         }
     }
 }
