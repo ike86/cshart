@@ -4,9 +4,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using DotNetGraph;
+using DotNetGraph.Core;
 using DotNetGraph.Edge;
 using DotNetGraph.Extensions;
 using DotNetGraph.Node;
+using DotNetGraph.SubGraph;
 using Mono.Reflection;
 
 namespace Cshart
@@ -37,21 +39,35 @@ namespace Cshart
             }
         }
 
-        // TODO introduce declaring types as clusters
         private static string ConvertToDotGraph(IEnumerable<MethodCall> methodCalls)
         {
             methodCalls = methodCalls.ToArray();
             var caller = methodCalls.First().Caller;
 
             var graph =
-                new DotGraph(
+                new Graph(
                     $"{caller.DeclaringType.Name}.{caller.Name}()",
                     directed: true);
-            graph.AddMethod(caller);
+
+            var callerTypeCluster =
+                new SubGraph($"cluster {caller.DeclaringType.Name}")
+                {
+                    Style = DotSubGraphStyle.Rounded,
+                    Label = caller.DeclaringType.Name,
+                };
+            graph.Elements.Add(callerTypeCluster);
+            callerTypeCluster.AddMethod(caller);
 
             foreach (var call in methodCalls)
             {
-                graph.AddMethod(call.Callee);
+                var calleeTypeCluster =
+                    new SubGraph($"cluster {call.Callee.DeclaringType.Name}")
+                    {
+                        Style = DotSubGraphStyle.Rounded,
+                        Label = call.Callee.DeclaringType.Name,
+                    };
+                calleeTypeCluster.AddMethod(call.Callee);
+                graph.Elements.Add(calleeTypeCluster);
 
                 graph.AddMethodCall(caller, call.Callee);
             }
@@ -75,7 +91,7 @@ namespace Cshart
 
     public static class GraphExtensions
     {
-        public static void AddMethod(this DotGraph graph, MethodInfo caller)
+        public static void AddMethod(this IGraph graph, MethodInfo caller)
         {
             graph.Elements.Add(
                 new DotNode
@@ -86,7 +102,7 @@ namespace Cshart
                 });
         }
 
-        public static void AddMethodCall(this DotGraph graph, MethodInfo caller,  MethodInfo callee)
+        public static void AddMethodCall(this IGraph graph, MethodInfo caller,  MethodInfo callee)
         {
             graph.Elements.Add(
                 new DotEdge(
@@ -96,5 +112,28 @@ namespace Cshart
                     ArrowHead = DotEdgeArrowType.Normal
                 });
         }
+    }
+
+    public class Graph : DotGraph, IGraph
+    {
+        public Graph()
+        {
+        }
+
+        public Graph(string identifier, bool directed = false) : base(identifier, directed)
+        {
+        }
+    }
+
+    public class SubGraph : DotSubGraph, IGraph
+    {
+        public SubGraph(string identifier = null) : base(identifier)
+        {
+        }
+    }
+
+    public interface IGraph
+    {
+        List<IDotElement> Elements { get; }
     }
 }
