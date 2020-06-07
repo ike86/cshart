@@ -37,43 +37,28 @@ namespace Cshart
             }
         }
 
+        // TODO introduce declaring types as clusters
         private static string ConvertToDotGraph(IEnumerable<MethodCall> methodCalls)
         {
             methodCalls = methodCalls.ToArray();
+            var caller = methodCalls.First().Caller;
+
             var graph =
                 new DotGraph(
-                    $"{methodCalls.First().Caller.DeclaringType.Name}.{methodCalls.First().Caller.Name}()",
+                    $"{caller.DeclaringType.Name}.{caller.Name}()",
                     directed: true);
-
-            graph.Elements.Add(
-                new DotNode
-                {
-                    Identifier = methodCalls.First().Caller.Name,
-                    Label = methodCalls.First().Caller.Name,
-                    Shape = DotNodeShape.Ellipse,
-                });
+            graph.AddMethod(caller);
 
             foreach (var call in methodCalls)
             {
-                graph.Elements.Add(
-                    new DotNode
-                    {
-                        Identifier = call.Callee.Name,
-                        Label = call.Callee.Name,
-                        Shape = DotNodeShape.Ellipse,
-                    });
+                graph.AddMethod(call.Callee);
 
-                graph.Elements.Add(
-                    new DotEdge(
-                        left: methodCalls.First().Caller.Name,
-                        right: call.Callee.Name)
-                    {
-                        ArrowHead = DotEdgeArrowType.Normal
-                    });
+                graph.AddMethodCall(caller, call.Callee);
             }
 
             return graph.Compile();
         }
+
 
         private class MethodCall
         {
@@ -85,6 +70,31 @@ namespace Cshart
 
             public MethodInfo Caller { get; }
             public MethodInfo Callee { get; }
+        }
+    }
+
+    public static class GraphExtensions
+    {
+        public static void AddMethod(this DotGraph graph, MethodInfo caller)
+        {
+            graph.Elements.Add(
+                new DotNode
+                {
+                    Identifier = caller.Name,
+                    Label = caller.Name,
+                    Shape = DotNodeShape.Ellipse,
+                });
+        }
+
+        public static void AddMethodCall(this DotGraph graph, MethodInfo caller,  MethodInfo callee)
+        {
+            graph.Elements.Add(
+                new DotEdge(
+                    left: caller.Name,
+                    right: callee.Name)
+                {
+                    ArrowHead = DotEdgeArrowType.Normal
+                });
         }
     }
 }
