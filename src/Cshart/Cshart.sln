@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cshart", "Cshart\Cshart.csproj", "{30B90ADA-3B94-47BF-971B-DB742A40924B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cshart.Tests", "Cshart.Tests\Cshart.Tests.csproj", "{716E1014-6A1D-4747-A5CF-0554E24256A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cshart.Tests", "Cshart.Tests\Cshart.Tests.csproj", "{716E1014-6A1D-4747-A5CF-0554E24256A3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E05FBCF-8CD0-4968-945E-6833533CEF2C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

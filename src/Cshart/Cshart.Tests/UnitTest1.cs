@@ -8,7 +8,7 @@ namespace Cshart.Tests
         [Fact]
         public void Test1()
         {
-            _ = new Class1();
+            _ = new Chart();
         }
     }
 }

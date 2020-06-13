@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# SA1633: File should have header
+dotnet_diagnostic.SA1633.severity = none
+
+# AV2210: Build with -warnaserror.
+dotnet_diagnostic.AV2210.severity = none
