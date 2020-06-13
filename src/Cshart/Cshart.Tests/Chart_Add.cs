@@ -1,6 +1,7 @@
 ﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
+using static Cshart.Tests.TestingDsl;
 
 namespace Cshart.Tests
 {
@@ -18,26 +19,14 @@ namespace Cshart.Tests
         public void Yields_cluster_for_non_empty_type(Chart chart)
         {
             var nodes = chart.Add(typeof(WithMethods));
+            var caller = nameof(WithMethods.Api);
+            var calleeOne = "StepOne";
+            var calleeTwo = "StepTwo";
 
             nodes.Should().BeEquivalentTo(
-                TypeNode<WithMethods>(nameof(WithMethods.Api), "StepOne", "StepTwo"));
-        }
-
-        private static Node TypeNode<T>(params string[] methodNames)
-        {
-            var node = Node.FromType(typeof(T));
-            node.Add(MemberNode<T>(".ctor"));
-            foreach (var methodName in methodNames)
-            {
-                node.Add(MemberNode<T>(methodName));
-            }
-
-            return node;
-        }
-
-        private static Node MemberNode<T>(string memberName)
-        {
-            return Node.FromMember(typeof(T), new FakeMemberInfo(memberName));
+                TypeNode<WithMethods>(caller, calleeOne, calleeTwo)
+                .WithEdge(caller, calleeOne)
+                .WithEdge(caller, calleeTwo));
         }
 
         // TODO yield calls between methods

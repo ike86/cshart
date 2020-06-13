@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using EnsureThat;
+using Mono.Reflection;
 
 namespace Cshart
 {
@@ -15,63 +16,54 @@ namespace Cshart
             EnsureArg.IsNotNull(type, nameof(type));
 
             var node = Node.FromType(type);
-            foreach (var member
-                in type.GetMembers(
-                    BindingFlags.DeclaredOnly
-                    | BindingFlags.Public
-                    | BindingFlags.NonPublic
-                    | BindingFlags.Instance))
+            var memberInfos = GetMemberInfos(type);
+            AddMembers(node, memberInfos, type);
+
+            foreach (var member in memberInfos)
             {
-                node.Add(Node.FromMember(type, member));
+                var methodInfo = type.GetMethod(member.Name);
+                AddCallsFrom(methodInfo, node, type);
             }
 
             yield return node;
         }
-    }
 
-    public interface IGraphElement
-    {
-        string Id { get; }
-
-        IEnumerable<IGraphElement> Children { get; }
-
-        void Add(IGraphElement child);
-    }
-
-    public class Node : IGraphElement
-    {
-        private readonly ICollection<IGraphElement> children = new List<IGraphElement>();
-
-        public Node(string id)
+        private static void AddMembers(Node node, IEnumerable<MemberInfo> memberInfos, Type type)
         {
-            EnsureArg.IsNotNull(id, nameof(id));
-
-            Id = id;
-        }
-
-        public Node(string id, params Node[] children)
-            : this(id)
-        {
-            foreach (var child in children)
+            foreach (var member in memberInfos)
             {
-                Add(child);
+                node.Add(Node.FromMember(type, member));
             }
         }
 
-        public string Id { get; }
-
-        public IEnumerable<IGraphElement> Children => children;
-
-        public static Node FromType(Type type) => new Node(type.FullName);
-
-        public static Node FromMember(Type type, MemberInfo member)
+        private static void AddCallsFrom(MethodInfo callerMethodInfo, Node node, Type type)
         {
-            return new Node($"{type.FullName}.{member.Name}");
+            if (callerMethodInfo is null)
+            {
+                return;
+            }
+
+            foreach (var instruction in callerMethodInfo.GetInstructions())
+            {
+                if (instruction.Operand is MethodInfo methodInfo)
+                {
+                    node.Add(
+                        new Edge(
+                            node,
+                            Node.CreateId(type, callerMethodInfo),
+                            Node.CreateId(type, methodInfo)));
+                }
+            }
         }
 
-        public void Add(IGraphElement child)
+        private static IEnumerable<MemberInfo> GetMemberInfos(Type type)
         {
-            children.Add(child);
+            return
+                type.GetMembers(
+                    BindingFlags.DeclaredOnly
+                    | BindingFlags.Public
+                    | BindingFlags.NonPublic
+                    | BindingFlags.Instance);
         }
     }
 }

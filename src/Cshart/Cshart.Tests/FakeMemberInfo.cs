@@ -20,7 +20,7 @@ namespace Cshart.Tests
 
         public override object[] GetCustomAttributes(bool inherit)
         {
-            throw new NotImplementedException();
+            return GetCustomAttributes(null, inherit);
         }
 
         public override object[] GetCustomAttributes(Type attributeType, bool inherit)
