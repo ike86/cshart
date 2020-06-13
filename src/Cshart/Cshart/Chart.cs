@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Cshart
 {
@@ -7,5 +8,19 @@ namespace Cshart
     /// </summary>
     public class Chart
     {
+        public IEnumerable<Node> Add(Type type)
+        {
+            yield return new Node(type.FullName);
+        }
+    }
+
+    public class Node
+    {
+        public Node(string id)
+        {
+            Id = id;
+        }
+
+        public string Id { get; }
     }
 }

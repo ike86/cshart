@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="CodeAnalysisRules" Description="Code Analysis rule set for the Cshart project" ToolsVersion="15.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <!--READABILITY-->
+    <!-- PrefixLocalCallsWithThis -->
+    <Rule Id="SA1101" Action="None" />
+    <!--ORDERING -->
+    <!--NAMING-->
+    <!--ParameterNamesMustBeginWithLowerCaseLetter-->
+    <!--This can be removed, when https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/2599 gets resolved-->
+    <Rule Id="SA1313" Action="None" />
+    <!--MAINTAINABILITY-->
+    <!--FieldsMustBePrivate duplicates CA1051-->
+    <Rule Id="SA1401" Action="None" />
+    <!--DOCUMENTATION -->
+  </Rules>
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <!-- Microsoft.Design -->
+    <!-- AvoidNamespacesWithFewTypes -->
+    <Rule Id="CA1020" Action="Warning" />
+    <!-- ValidateArgumentsOfPublicMethods - covered by nullable -->
+    <Rule Id="CA1062" Action="None" />
+    <!-- AssembliesShouldHaveValidStrongNames -->
+    <Rule Id="CA2210" Action="None" />
+    <!-- DoNotNestGenericTypesInMemberSignatures -->
+    <Rule Id="CA1006" Action="None" />
+    <!-- This is an old rule from the early versions of C#, where type inference wasn't so great for generics, as today -->
+    <!-- PropertiesShouldNotBeWriteOnly -->
+    <Rule Id="CA1044" Action="None" />
+    <!-- We use write only properties for testing purposes (data injection) -->
+    <!-- Microsoft.Naming -->
+    <!-- Microsoft.Performance -->
+    <!-- AvoidUninstantiatedInternalClasses -->
+    <Rule Id="CA1812" Action="None" />
+    <!-- TestForEmptyStringsUsingStringLength -->
+    <Rule Id="CA1820" Action="None" />
+    <!-- Microsoft.Globalization -->
+    <!-- Microsoft.Reliability -->
+    <!-- Microsoft.Usage -->
+  </Rules>
+  <Rules AnalyzerId="CSharpGuidelinesAnalyzer" RuleNamespace="CSharpGuidelinesAnalyzer">
+    <Rule Id="AV2210" Action="None" />
+  </Rules>
+</RuleSet>
