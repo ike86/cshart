@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Linq;
+using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -7,19 +7,63 @@ namespace Cshart.Tests
 {
     public class Chart_Add
     {
-        [Fact]
-        public void Yields_singular_node_for_empty_type()
+        [Theory, AutoData]
+        public void Yields_singular_node_for_empty_type(Chart chart)
         {
-            var chart = new Chart();
+            var nodes = chart.Add(typeof(Empty));
 
-            IEnumerable<Node> nodes = chart.Add(typeof(EmptyType));
-
-            nodes.Should().BeEquivalentTo(
-                new Node(typeof(EmptyType).FullName));
+            nodes.Should().BeEquivalentTo(TypeNode<Empty>());
         }
 
-        private class EmptyType
+        [Theory, AutoData]
+        public void Yields_cluster_for_non_empty_type(Chart chart)
         {
+            var nodes = chart.Add(typeof(WithMethods));
+
+            nodes.Should().BeEquivalentTo(
+                TypeNode<WithMethods>(nameof(WithMethods.Api), "StepOne", "StepTwo"));
+        }
+
+        private static Node TypeNode<T>(params string[] methodNames)
+        {
+            return
+                new Node(
+                    typeof(T).FullName,
+                    MemberNode<T>(".ctor").Yield()
+                    .Concat(methodNames.Select(MemberNode<T>))
+                    .ToArray());
+        }
+
+        private static Node MemberNode<T>(string memberName)
+        {
+            return new Node($"{typeof(T).FullName}.{memberName}");
+        }
+
+        // TODO yield calls between methods
+
+        // TODO yield multiple types
+
+        // TODO yield relations between types and methods
+
+        private class Empty
+        {
+        }
+
+        private class WithMethods
+        {
+            public void Api()
+            {
+                StepOne();
+                StepTwo();
+            }
+
+            private void StepOne()
+            {
+            }
+
+            private void StepTwo()
+            {
+            }
         }
     }
 }

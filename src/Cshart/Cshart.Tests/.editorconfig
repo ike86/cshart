@@ -18,3 +18,6 @@ dotnet_diagnostic.CA1707.severity = none
 
 # CS1591: Missing XML comment for publicly visible type or member
 dotnet_diagnostic.CS1591.severity = none
+
+# AV1706: Identifier contains an abbreviation or is too short
+dotnet_diagnostic.AV1706.severity = suggestion
