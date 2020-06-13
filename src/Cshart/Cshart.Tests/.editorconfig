@@ -21,3 +21,6 @@ dotnet_diagnostic.CS1591.severity = none
 
 # AV1706: Identifier contains an abbreviation or is too short
 dotnet_diagnostic.AV1706.severity = suggestion
+
+# AV2305: Missing XML comment for internally visible type, member or parameter
+dotnet_diagnostic.AV2305.severity = suggestion

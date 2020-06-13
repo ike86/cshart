@@ -14,7 +14,7 @@ namespace Cshart
         {
             EnsureArg.IsNotNull(type, nameof(type));
 
-            var node = new Node(type.FullName);
+            var node = Node.FromType(type);
             foreach (var member
                 in type.GetMembers(
                     BindingFlags.DeclaredOnly
@@ -22,7 +22,7 @@ namespace Cshart
                     | BindingFlags.NonPublic
                     | BindingFlags.Instance))
             {
-                node.Add(new Node($"{type.FullName}.{member.Name}"));
+                node.Add(Node.FromMember(type, member));
             }
 
             yield return node;
@@ -61,6 +61,13 @@ namespace Cshart
         public string Id { get; }
 
         public IEnumerable<IGraphElement> Children => children;
+
+        public static Node FromType(Type type) => new Node(type.FullName);
+
+        public static Node FromMember(Type type, MemberInfo member)
+        {
+            return new Node($"{type.FullName}.{member.Name}");
+        }
 
         public void Add(IGraphElement child)
         {

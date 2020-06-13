@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoFixture.Xunit2;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using Xunit;
 
@@ -26,17 +25,19 @@ namespace Cshart.Tests
 
         private static Node TypeNode<T>(params string[] methodNames)
         {
-            return
-                new Node(
-                    typeof(T).FullName,
-                    MemberNode<T>(".ctor").Yield()
-                    .Concat(methodNames.Select(MemberNode<T>))
-                    .ToArray());
+            var node = Node.FromType(typeof(T));
+            node.Add(MemberNode<T>(".ctor"));
+            foreach (var methodName in methodNames)
+            {
+                node.Add(MemberNode<T>(methodName));
+            }
+
+            return node;
         }
 
         private static Node MemberNode<T>(string memberName)
         {
-            return new Node($"{typeof(T).FullName}.{memberName}");
+            return Node.FromMember(typeof(T), new FakeMemberInfo(memberName));
         }
 
         // TODO yield calls between methods
