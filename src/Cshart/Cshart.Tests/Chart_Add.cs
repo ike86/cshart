@@ -29,7 +29,9 @@ namespace Cshart.Tests
                 .WithEdge(caller, calleeTwo));
         }
 
-        // TODO yield calls between methods
+        // TODO write first e2e test
+        // - map between internal- and DotNetGraph model
+        // - how to test integration?
 
         // TODO yield multiple types
 
