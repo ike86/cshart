@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using DotNetGraph;
 using EnsureThat;
 using Mono.Reflection;
 
@@ -28,7 +30,10 @@ namespace Cshart
             yield return node;
         }
 
-        private static void AddMembers(Node node, IEnumerable<MemberInfo> memberInfos, Type type)
+        private static void AddMembers(
+            Node node,
+            IEnumerable<MemberInfo> memberInfos,
+            Type type)
         {
             foreach (var member in memberInfos)
             {
@@ -36,7 +41,10 @@ namespace Cshart
             }
         }
 
-        private static void AddCallsFrom(MethodInfo callerMethodInfo, Node node, Type type)
+        private static void AddCallsFrom(
+            MethodInfo callerMethodInfo,
+            Node node,
+            Type type)
         {
             if (callerMethodInfo is null)
             {
@@ -54,6 +62,16 @@ namespace Cshart
                             Node.CreateId(type, methodInfo)));
                 }
             }
+        }
+
+        internal DotGraph ConvertToDotGraph(IEnumerable<IGraphElement> nodes)
+        {
+            var root = new Graph("root");
+            var typeNode = nodes.First() as Node;
+            var typeCluster = new SubGraph(typeNode.Id);
+            typeCluster.AddMethod(typeNode.Children.First() as Node);
+            root.Elements.Add(typeCluster);
+            return root;
         }
 
         private static IEnumerable<MemberInfo> GetMemberInfos(Type type)

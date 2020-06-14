@@ -1,37 +1,59 @@
-﻿using AutoFixture.Xunit2;
+﻿using System.Linq;
+using AutoFixture.Xunit2;
+using DotNetGraph.Node;
 using FluentAssertions;
 using Xunit;
 using static Cshart.Tests.TestingDsl;
 
 namespace Cshart.Tests
 {
-    public class Chart_Add
+    public static class Chart_
     {
-        [Theory, AutoData]
-        public void Yields_singular_node_for_empty_type(Chart chart)
+        public class Add_
         {
-            var nodes = chart.Add(typeof(Empty));
+            [Theory, AutoData]
+            public void Yields_singular_node_for_empty_type(Chart chart)
+            {
+                var nodes = chart.Add(typeof(Empty));
 
-            nodes.Should().BeEquivalentTo(TypeNode<Empty>());
+                nodes.Should().BeEquivalentTo(TypeNode<Empty>());
+            }
+
+            [Theory, AutoData]
+            public void Yields_cluster_for_non_empty_type(Chart chart)
+            {
+                var nodes = chart.Add(typeof(WithMethods));
+                var caller = nameof(WithMethods.Api);
+                var calleeOne = "StepOne";
+                var calleeTwo = "StepTwo";
+
+                nodes.Should().BeEquivalentTo(
+                    TypeNode<WithMethods>(caller, calleeOne, calleeTwo)
+                    .WithEdge(caller, calleeOne)
+                    .WithEdge(caller, calleeTwo));
+            }
         }
 
-        [Theory, AutoData]
-        public void Yields_cluster_for_non_empty_type(Chart chart)
+        public class ConvertToDotGraph_
         {
-            var nodes = chart.Add(typeof(WithMethods));
-            var caller = nameof(WithMethods.Api);
-            var calleeOne = "StepOne";
-            var calleeTwo = "StepTwo";
+            [Theory, AutoData]
+            public void Yields_a_graph_with_a_cluster_with_a_node_for_emtpy_type(
+                Chart chart)
+            {
+                var node = TypeNode<Empty>();
 
-            nodes.Should().BeEquivalentTo(
-                TypeNode<WithMethods>(caller, calleeOne, calleeTwo)
-                .WithEdge(caller, calleeOne)
-                .WithEdge(caller, calleeTwo));
+                var graph = chart.ConvertToDotGraph(node.Yield());
+
+                graph.Should().BeEquivalentTo(
+                    RootGraph(
+                        TypeCluster(
+                            node,
+                            new DotNode(node.Children.Single().Id))));
+            }
         }
 
         // TODO write first e2e test
         // - map between internal- and DotNetGraph model
-        // - how to test integration?
 
         // TODO yield multiple types
 

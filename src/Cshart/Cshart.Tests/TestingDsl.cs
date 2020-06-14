@@ -1,4 +1,7 @@
 ﻿using System;
+using DotNetGraph;
+using DotNetGraph.Core;
+using DotNetGraph.SubGraph;
 
 namespace Cshart.Tests
 {
@@ -34,6 +37,22 @@ namespace Cshart.Tests
         private static string CreateId(Type type, string memberId)
         {
             return Node.CreateId(type, new FakeMemberInfo(memberId));
+        }
+
+        public static DotGraph RootGraph(params IDotElement[] elements)
+        {
+            var root = new DotGraph("root", directed: true);
+            root.Elements.AddRange(elements);
+            return root;
+        }
+
+        public static DotSubGraph TypeCluster<T>(
+            TypedNode<T> typedNode,
+            params IDotElement[] elements)
+        {
+            var typeCluster = new DotSubGraph(typedNode.Id);
+            typeCluster.Elements.AddRange(elements);
+            return typeCluster;
         }
     }
 }

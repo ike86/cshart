@@ -24,3 +24,9 @@ dotnet_diagnostic.AV1706.severity = suggestion
 
 # AV2305: Missing XML comment for internally visible type, member or parameter
 dotnet_diagnostic.AV2305.severity = suggestion
+
+# CA1034: Nested types should not be visible
+dotnet_diagnostic.CA1034.severity = none
+
+# AV1008: Class should not be static
+dotnet_diagnostic.AV1008.severity = none
