@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetGraph" Version="2.5.0" />
+    <PackageReference Include="DotNetGraph" Version="2.6.0" />
     <PackageReference Include="Ensure.That" Version="9.2.0" />
     <PackageReference Include="Mono.Reflection" Version="2.0.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
