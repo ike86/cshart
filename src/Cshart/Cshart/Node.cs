@@ -1,4 +1,4 @@
-﻿namespace Cshart.Tests
+﻿namespace Cshart
 {
     public class Node
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Cshart.Tests
+namespace Cshart
 {
     public class Graph
     {
