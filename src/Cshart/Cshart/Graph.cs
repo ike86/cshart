@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Cshart.Tests
 {
     internal class Graph
     {
-        public IEnumerable<Node> Nodes { get; internal set; }
+        public Graph(IEnumerable<Node> nodes)
+        {
+            Nodes = nodes.ToArray();
+        }
+
+        public IEnumerable<Node> Nodes { get; }
     }
 }

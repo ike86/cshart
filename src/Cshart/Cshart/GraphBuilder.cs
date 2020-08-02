@@ -17,10 +17,9 @@ namespace Cshart.Tests
 
         internal Graph BuildGraph()
         {
-            return new Graph()
-            {
-                Nodes = types.Select(t => new Node(t.FullName)).ToArray(),
-            };
+            var nodes = types.Select(t => new Node(t.FullName)).ToArray();
+
+            return new Graph(nodes);
         }
     }
 }
