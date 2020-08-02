@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using AutoFixture.Xunit2;
 using DotNetGraph.Node;
+using DotNetGraph.SubGraph;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 using static Cshart.Tests.TestingDsl;
 
@@ -36,6 +38,7 @@ namespace Cshart.Tests
 
         public class ConvertToDotGraph_
         {
+            // TODO fix false positive test
             [Theory, AutoData]
             public void Yields_a_graph_with_a_cluster_with_a_node_for_emtpy_type(
                 Chart chart)
@@ -47,9 +50,27 @@ namespace Cshart.Tests
                 graph.Should().BeEquivalentTo(
                     RootGraph(
                         TypeCluster(
-                            node,
-                            new DotNode(node.Children.Single().Id))));
+                            node
+                            ,
+                            new DotNode(node.Children.Single().Id)
+                            )));
             }
+
+
+            [Theory, AutoData]
+            public void Test(string id)
+            {
+                var node = TypeNode<Empty>();
+                var typeCluster = new DotSubGraph(id);
+                typeCluster.Elements.Add(new DotNode(node.Children.Single().Id));
+
+                var typeCluster2 = new DotSubGraph(id);
+
+                using var a = new AssertionScope();
+                typeCluster.Should().BeEquivalentTo(typeCluster2);
+                typeCluster2.Should().BeEquivalentTo(typeCluster);
+            }
+
         }
 
         // TODO write first e2e test
