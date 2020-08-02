@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cshart.Tests
 {
@@ -12,6 +13,14 @@ namespace Cshart.Tests
         internal void AddTypes(IEnumerable<Type> types)
         {
             this.types.AddRange(types);
+        }
+
+        internal Graph BuildGraph()
+        {
+            return new Graph()
+            {
+                Nodes = types.Select(t => new Node(t.FullName)).ToArray(),
+            };
         }
     }
 }
