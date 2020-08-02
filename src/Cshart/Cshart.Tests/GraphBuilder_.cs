@@ -7,11 +7,11 @@ using Xunit;
 
 namespace Cshart.Tests
 {
-    public class ChartBuilder_
+    public class GraphBuilder_
     {
         [Theory, AutoData]
         public void AddTypes_adds_the_specified_types(
-            ChartBuilder builder,
+            GraphBuilder builder,
             IEnumerable<Type> types)
         {
             types = types.ToArray();
@@ -23,7 +23,7 @@ namespace Cshart.Tests
 
         [Theory, AutoData]
         public void BuildGraph_yields_nodes_with_types_FullNames(
-            ChartBuilder builder,
+            GraphBuilder builder,
             IEnumerable<Type> types)
         {
             types = types.ToArray();

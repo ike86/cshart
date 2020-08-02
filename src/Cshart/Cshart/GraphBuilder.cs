@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Cshart.Tests
 {
-    public class ChartBuilder
+    public class GraphBuilder
     {
         private readonly List<Type> types = new List<Type>();
 
