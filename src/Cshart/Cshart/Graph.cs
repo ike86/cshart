@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Cshart.Tests
 {
-    internal class Graph
+    public class Graph
     {
         public Graph(IEnumerable<Node> nodes)
         {

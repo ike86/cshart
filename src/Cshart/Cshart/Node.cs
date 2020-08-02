@@ -1,6 +1,6 @@
 ﻿namespace Cshart.Tests
 {
-    internal class Node
+    public class Node
     {
         public Node(string id)
         {
