@@ -52,30 +52,7 @@ namespace Cshart.Tests
                         new DotNode(node.Children.Single().Id)));
 
                 using var a = new AssertionScope();
-                graph.Should().BeEquivalentTo(graph2);
-                // https://github.com/fluentassertions/fluentassertions/issues/978#issuecomment-441060261
-                // var cluster = graph.Elements.First();
-                // var cluster2 = graph2.Elements.First();
-                var cluster = graph.Elements.First() as DotSubGraph;
-                var cluster2 = graph2.Elements.First() as DotSubGraph;
-                cluster.Should().BeEquivalentTo(cluster2);
-                var emptyNode = cluster.Elements.First() as DotNode;
-                var emptyNode2 = cluster2.Elements.First() as DotNode;
-                emptyNode.Should().BeEquivalentTo(emptyNode2);
-            }
-
-            [Theory, AutoData]
-            public void Test(string id)
-            {
-                var node = TypeNode<Empty>();
-                var typeCluster = new DotSubGraph(id);
-                typeCluster.Elements.Add(new DotNode(node.Children.Single().Id));
-
-                var typeCluster2 = new DotSubGraph(id);
-
-                using var a = new AssertionScope();
-                typeCluster.Should().BeEquivalentTo(typeCluster2);
-                typeCluster2.Should().BeEquivalentTo(typeCluster);
+                graph.Should().BeEquivalentTo(graph2, options => options.RespectingRuntimeTypes());
             }
         }
 
