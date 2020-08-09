@@ -46,16 +46,23 @@ namespace Cshart.Tests
                 var node = TypeNode<Empty>();
 
                 var graph = chart.ConvertToDotGraph(node.Yield());
+                var graph2 = RootGraph(
+                    TypeCluster(
+                        node,
+                        new DotNode(node.Children.Single().Id)));
 
-                graph.Should().BeEquivalentTo(
-                    RootGraph(
-                        TypeCluster(
-                            node
-                            ,
-                            new DotNode(node.Children.Single().Id)
-                            )));
+                using var a = new AssertionScope();
+                graph.Should().BeEquivalentTo(graph2);
+                // https://github.com/fluentassertions/fluentassertions/issues/978#issuecomment-441060261
+                // var cluster = graph.Elements.First();
+                // var cluster2 = graph2.Elements.First();
+                var cluster = graph.Elements.First() as DotSubGraph;
+                var cluster2 = graph2.Elements.First() as DotSubGraph;
+                cluster.Should().BeEquivalentTo(cluster2);
+                var emptyNode = cluster.Elements.First() as DotNode;
+                var emptyNode2 = cluster2.Elements.First() as DotNode;
+                emptyNode.Should().BeEquivalentTo(emptyNode2);
             }
-
 
             [Theory, AutoData]
             public void Test(string id)
@@ -70,7 +77,6 @@ namespace Cshart.Tests
                 typeCluster.Should().BeEquivalentTo(typeCluster2);
                 typeCluster2.Should().BeEquivalentTo(typeCluster);
             }
-
         }
 
         // TODO write first e2e test
