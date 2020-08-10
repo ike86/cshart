@@ -46,31 +46,14 @@ namespace Cshart.Tests
                 var node = TypeNode<Empty>();
 
                 var graph = chart.ConvertToDotGraph(node.Yield());
-
-                graph.Should().BeEquivalentTo(
-                    RootGraph(
-                        TypeCluster(
-                            node
-                            ,
-                            new DotNode(node.Children.Single().Id)
-                            )));
-            }
-
-
-            [Theory, AutoData]
-            public void Test(string id)
-            {
-                var node = TypeNode<Empty>();
-                var typeCluster = new DotSubGraph(id);
-                typeCluster.Elements.Add(new DotNode(node.Children.Single().Id));
-
-                var typeCluster2 = new DotSubGraph(id);
+                var graph2 = RootGraph(
+                    TypeCluster(
+                        node,
+                        new DotNode(node.Children.Single().Id)));
 
                 using var a = new AssertionScope();
-                typeCluster.Should().BeEquivalentTo(typeCluster2);
-                typeCluster2.Should().BeEquivalentTo(typeCluster);
+                graph.Should().BeEquivalentTo(graph2, options => options.RespectingRuntimeTypes());
             }
-
         }
 
         // TODO write first e2e test
