@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using DotNetGraph;
+using DotNetGraph.Attributes;
+using DotNetGraph.Extensions;
+using DotNetGraph.Node;
+using DotNetGraph.SubGraph;
 
 namespace Cshart.Sandbox
 {
@@ -9,13 +15,47 @@ namespace Cshart.Sandbox
     {
         static void Main(string[] args)
         {
-            var paths = File.ReadAllLines(args[0]);
+            var arguments = File.ReadAllLines(args[0]);
 
-            var assemblies = paths.Select(p => Assembly.LoadFrom(p));
+            var pathOfDirectory = arguments[0];
+            var filePaths = Directory.EnumerateFiles(pathOfDirectory);
+            var assemblies = TryLoadAssemblies(filePaths);
 
-            foreach (var assembly in assemblies)
+            var assembly = assemblies.First();
+
+            var types = assembly.DefinedTypes;
+            var assemblyGraph = new DotSubGraph(assembly.GetName().Name);
+            foreach (var type in types)
             {
-                Console.WriteLine($"Loaded {assembly.GetName().Name}");
+                assemblyGraph.Elements.Add(
+                    new DotNode(type.FullName) { Shape = new DotNodeShapeAttribute(DotNodeShape.Box) });
+            }
+            
+            var dotGraph = new DotGraph("foo");
+            dotGraph.Elements.Add(assemblyGraph);
+
+            Console.Write(dotGraph.Compile(indented: true, formatStrings: true));
+        }
+
+        private static IEnumerable<Assembly> TryLoadAssemblies(IEnumerable<string> filePaths)
+        {
+            foreach (var filePath in filePaths.Where(p => p.EndsWith(".dll")))
+            {
+                Assembly a = null;
+                try
+                {
+                    a = Assembly.LoadFrom(filePath);
+                    Console.WriteLine($"Loaded {a.GetName().Name}");
+                }
+                catch (BadImageFormatException)
+                {
+                    Console.WriteLine($"Could not load from {filePath}");
+                }
+
+                if (a is { })
+                {
+                    yield return a;
+                }
             }
         }
     }
