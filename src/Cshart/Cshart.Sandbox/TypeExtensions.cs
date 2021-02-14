@@ -1,6 +1,9 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace Cshart.Sandbox
 {
@@ -28,6 +31,27 @@ namespace Cshart.Sandbox
             {
                 Console.WriteLine(ex);
                 return null;
+            }
+        }
+        
+        public static IEnumerable<FieldInfo> TryGetFields(this Type type)
+        {
+            return TryGetFieldInfos(type, BindingFlags.Instance | BindingFlags.Public)
+                .Concat(TryGetFieldInfos(type, BindingFlags.Instance | BindingFlags.NonPublic))
+                .Concat(TryGetFieldInfos(type, BindingFlags.Static | BindingFlags.Public))
+                .Concat(TryGetFieldInfos(type, BindingFlags.Static | BindingFlags.NonPublic));
+
+            static FieldInfo[] TryGetFieldInfos(Type type, BindingFlags f)
+            {
+                try
+                {
+                    return type.GetFields(f);
+                }
+                catch (FileNotFoundException ex)
+                {
+                    Console.WriteLine($"Skipping {f} fields of {type.FullName} due to {ex}");
+                    return Array.Empty<FieldInfo>();
+                }
             }
         }
     }
