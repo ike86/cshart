@@ -41,11 +41,12 @@ namespace Cshart.Sandbox
             Console.Write(compiledDotGraph);
             
             var diagramFileName = $"{assemblyName}.svg";
-            Console.WriteLine($"Writing dot graph into {diagramFileName}.txt ..."); 
-            File.WriteAllText($"{diagramFileName}.txt", compiledDotGraph);
+            var dotFileName = $"{diagramFileName}.txt";
+            Console.WriteLine($"Writing dot graph into {dotFileName} ..."); 
+            File.WriteAllText(dotFileName, compiledDotGraph);
 
             var dotExePath = arguments[2];
-            var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}.txt");
+            var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
             Console.WriteLine($"Dot graph can be found at {dotFileFullPath}");
 
             if (!File.Exists(dotExePath))
