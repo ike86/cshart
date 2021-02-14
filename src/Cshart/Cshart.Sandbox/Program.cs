@@ -38,7 +38,8 @@ namespace Cshart.Sandbox
                                 typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
                                 typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
                             }
-                        }
+                        },
+                        CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
                     }
                     .Build();
 

@@ -23,9 +23,12 @@ namespace Cshart.Sandbox
             this.assemblyName = assemblyName;
 
             StyleTypeNode = (_, _) => { };
+            CreateTypeNodeAppender = g => new DefaultTypeNodeAppender(g);
         }
 
         public Action<Type, DotNode> StyleTypeNode { init; private get; }
+
+        public Func<DotSubGraph, ITypeNodeAppender> CreateTypeNodeAppender { init; private get; }
 
         public DotGraph Build()
         {
@@ -41,24 +44,13 @@ namespace Cshart.Sandbox
 
         private void AddTypes(DotSubGraph assemblyGraph)
         {
+            var typeNodeAppender = CreateTypeNodeAppender(assemblyGraph);
             foreach (var type in types.Where(t => !t.IsCompilerGenerated()))
             {
                 var typeNode = new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()};
                 StyleTypeNode(type, typeNode);
 
-                var typeNamespace = type.TryGetNamespace() ?? "no namespace";
-                var namespaceCluster =
-                    assemblyGraph.Elements
-                        .OfType<DotSubGraph>()
-                        .FirstOrDefault(x => x.Identifier == typeNamespace)
-                    ?? new DotSubGraph(typeNamespace)
-                    {
-                        Label = new DotLabelAttribute(typeNamespace)
-                    };
-                namespaceCluster.Elements.Add(typeNode);
-                
-                assemblyGraph.Elements.Add(namespaceCluster);
-                // assemblyGraph.Elements.Add(typeNode);
+                typeNodeAppender.Append(type, typeNode);
             }
         }
 
