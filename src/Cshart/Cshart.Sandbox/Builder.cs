@@ -1,7 +1,9 @@
 ﻿#nullable enable
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using DotNetGraph;
 using DotNetGraph.Attributes;
 using DotNetGraph.Core;
@@ -44,7 +46,7 @@ namespace Cshart.Sandbox
                     continue;
                 }
 
-                var fields = type.GetFields();
+                var fields = TryGetFields(type).ToArray();
                 foreach (var field in fields)
                 {
                     if (TryGetTypeNode(assemblyGraph, () => field.FieldType) is { } fieldTypeNode)
@@ -63,10 +65,33 @@ namespace Cshart.Sandbox
                     e => e is DotNode n
                          && n.Identifier == getType().FullName);
             }
-            catch (FileNotFoundException ex)
+            catch (Exception ex)
+                when (ex is FileNotFoundException
+                      || ex is TypeLoadException)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine($"Getting type node failed due to {ex}");
                 return null;
+            }
+        }
+
+        private static IEnumerable<FieldInfo> TryGetFields(Type type)
+        {
+            return TryGetFieldInfos(type, BindingFlags.Instance | BindingFlags.Public)
+                .Concat(TryGetFieldInfos(type, BindingFlags.Instance | BindingFlags.NonPublic))
+                .Concat(TryGetFieldInfos(type, BindingFlags.Static | BindingFlags.Public))
+                .Concat(TryGetFieldInfos(type, BindingFlags.Static | BindingFlags.NonPublic));
+
+            static FieldInfo[] TryGetFieldInfos(Type type, BindingFlags f)
+            {
+                try
+                {
+                    return type.GetFields(f);
+                }
+                catch (FileNotFoundException ex)
+                {
+                    Console.WriteLine($"Skipping {f} fields of {type.FullName} due to {ex}");
+                    return Array.Empty<FieldInfo>();
+                }
             }
         }
     }
