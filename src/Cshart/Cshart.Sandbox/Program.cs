@@ -21,9 +21,10 @@ namespace Cshart.Sandbox
             var filePaths = Directory.EnumerateFiles(pathOfDirectory);
             var assemblies = TryLoadAssemblies(filePaths);
 
-            var assembly = assemblies.First();
+            var assemblyName = arguments[1];
+            var assembly = assemblies.First(a => a.GetName().Name == assemblyName);
 
-            var types = assembly.DefinedTypes;
+            var types = TryGetTypes(assembly).ToArray();
             var assemblyGraph = new DotSubGraph(assembly.GetName().Name);
             foreach (var type in types)
             {
@@ -35,6 +36,24 @@ namespace Cshart.Sandbox
             dotGraph.Elements.Add(assemblyGraph);
 
             Console.Write(dotGraph.Compile(indented: true, formatStrings: true));
+        }
+
+        private static IEnumerable<Type> TryGetTypes(Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes();
+
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                foreach (var loaderException in ex.LoaderExceptions)
+                {
+                    Console.WriteLine(loaderException);
+                }
+
+                return ex.Types.Where(t => t is { });
+            }
         }
 
         private static IEnumerable<Assembly> TryLoadAssemblies(IEnumerable<string> filePaths)
