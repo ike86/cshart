@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using DotNetGraph.Attributes;
 using DotNetGraph.Node;
@@ -21,10 +22,11 @@ namespace Cshart.Sandbox
             var namespaceCluster =
                 subGraph.Elements
                     .OfType<DotSubGraph>()
-                    .FirstOrDefault(x => x.Identifier == typeNamespace)
-                ?? new DotSubGraph(typeNamespace)
+                    .FirstOrDefault(x => x.Identifier == $"cluster_{typeNamespace}")
+                ?? new DotSubGraph($"cluster_{typeNamespace}")
                 {
-                    Label = new DotLabelAttribute(typeNamespace)
+                    Label = new DotLabelAttribute(typeNamespace),
+                    Style = new DotSubGraphStyleAttribute(DotSubGraphStyle.Rounded),
                 };
             namespaceCluster.Elements.Add(typeNode);
 

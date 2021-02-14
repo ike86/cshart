@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using DotNetGraph;
@@ -32,7 +33,12 @@ namespace Cshart.Sandbox
 
         public DotGraph Build()
         {
-            var assemblyGraph = new DotSubGraph(assemblyName);
+            var assemblyGraph = new DotSubGraph(assemblyName)
+            {
+                Label = assemblyName,
+                Style = new DotSubGraphStyleAttribute(DotSubGraphStyle.Rounded),
+            };
+            
             AddTypes(assemblyGraph);
 
             AddEdges(assemblyGraph);

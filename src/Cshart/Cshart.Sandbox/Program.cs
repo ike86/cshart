@@ -15,6 +15,8 @@ namespace Cshart.Sandbox
 {
     class Program
     {
+        private const string Format = "svg";
+        
         static void Main(string[] args)
         {
             if (LoadArguments(args[0]) is not { } a)
@@ -23,9 +25,9 @@ namespace Cshart.Sandbox
             }
 
             var assemblies = TryLoadAssembliesFrom(a.PathOfDirectory);
-
+            
             var assembly = assemblies.First(x => x.GetName().Name == a.AssemblyName);
-
+            
             var types = TryGetTypes(assembly).ToArray();
             var assemblyName = assembly.GetName().Name!;
             var dotGraph =
@@ -42,9 +44,9 @@ namespace Cshart.Sandbox
                         CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
                     }
                     .Build();
-
+            
             var compiledDotGraph = Compile(dotGraph);
-            var diagramFileName = $"{a.AssemblyName}.svg";
+            var diagramFileName = $"{a.AssemblyName}.{Format}";
             var dotFileFullPath = OutputDotFile(diagramFileName, compiledDotGraph);
             if (!File.Exists(dotFileFullPath))
             {
@@ -52,6 +54,8 @@ namespace Cshart.Sandbox
                 return;
             }
 
+            // var dotFileName = $"{diagramFileName}.txt";
+            // var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
             RenderSvg(a.DotExePath, diagramFileName, dotFileFullPath);
         }
 
@@ -151,7 +155,7 @@ namespace Cshart.Sandbox
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         FileName = dotExePath,
-                        Arguments = $"-T svg -o {diagramFileName} \"{dotFileFullPath}\"",
+                        Arguments = $"-T {Format} -o {diagramFileName} \"{dotFileFullPath}\"",
                     })!;
             Console.WriteLine(process.StandardOutput.ReadToEnd());
             Console.WriteLine(process.StandardError.ReadToEnd());
