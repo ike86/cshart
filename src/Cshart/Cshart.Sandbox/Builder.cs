@@ -38,9 +38,7 @@ namespace Cshart.Sandbox
         {
             foreach (var type in types)
             {
-                var typeNode = assemblyGraph.Elements.FirstOrDefault(
-                    e => e is DotNode n
-                         && n.Identifier == type.FullName);
+                var typeNode = TryGetTypeNode(assemblyGraph, () => type);
                 var fields = type.GetFields();
                 foreach (var field in fields)
                 {
