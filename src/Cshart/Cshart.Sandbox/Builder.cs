@@ -27,7 +27,7 @@ namespace Cshart.Sandbox
 
         private static void AddTypes(Type[] types, DotSubGraph assemblyGraph)
         {
-            foreach (var type in types)
+            foreach (var type in types.Where(t => !t.IsCompilerGenerated()))
             {
                 assemblyGraph.Elements.Add(
                     new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()});
@@ -39,6 +39,11 @@ namespace Cshart.Sandbox
             foreach (var type in types)
             {
                 var typeNode = TryGetTypeNode(assemblyGraph, () => type);
+                if (typeNode is not { })
+                {
+                    continue;
+                }
+
                 var fields = type.GetFields();
                 foreach (var field in fields)
                 {
