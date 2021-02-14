@@ -74,9 +74,7 @@ namespace Cshart.Sandbox
         {
             try
             {
-                return assemblyGraph.Elements.FirstOrDefault(
-                    e => e is DotNode n
-                         && n.Identifier == getType().FullName);
+                return TryFindNode(assemblyGraph, n => n.Identifier == getType().FullName);
             }
             catch (Exception ex)
                 when (ex is FileNotFoundException
@@ -85,6 +83,24 @@ namespace Cshart.Sandbox
                 Console.WriteLine($"Getting type node failed due to {ex}");
                 return null;
             }
+        }
+
+        private static IDotElement? TryFindNode(DotSubGraph subGraph, Func<DotNode, bool> predicate)
+        {
+            var maybeNode =
+                subGraph.Elements
+                    .OfType<DotNode>()
+                    .FirstOrDefault(predicate);
+            if (maybeNode is { })
+            {
+                return maybeNode;
+            }
+
+            return
+                subGraph.Elements
+                    .OfType<DotSubGraph>()
+                    .FirstOrDefault(g => TryFindNode(g, predicate) is { });
+
         }
     }
 }
