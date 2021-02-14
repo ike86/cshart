@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace Cshart.Sandbox
 {
@@ -6,7 +9,14 @@ namespace Cshart.Sandbox
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var paths = File.ReadAllLines(args[0]);
+
+            var assemblies = paths.Select(p => Assembly.LoadFrom(p));
+
+            foreach (var assembly in assemblies)
+            {
+                Console.WriteLine($"Loaded {assembly.GetName().Name}");
+            }
         }
     }
 }
