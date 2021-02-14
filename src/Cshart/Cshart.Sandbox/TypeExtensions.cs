@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+using System;
+using System.IO;
 
 namespace Cshart.Sandbox
 {
@@ -13,6 +15,19 @@ namespace Cshart.Sandbox
                 return name.Contains("<")
                        || name.Contains(">")
                        || name.Contains("=");
+            }
+        }
+
+        public static string? TryGetNamespace(this Type type)
+        {
+            try
+            {
+                return type.Namespace;
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine(ex);
+                return null;
             }
         }
     }

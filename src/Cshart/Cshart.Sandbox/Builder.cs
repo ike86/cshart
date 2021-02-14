@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -31,8 +32,15 @@ namespace Cshart.Sandbox
         {
             foreach (var type in types.Where(t => !t.IsCompilerGenerated()))
             {
+                var typeNode = new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()};
+                if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl") ?? false)
+                {
+                    typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
+                    typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
+                }
+
                 assemblyGraph.Elements.Add(
-                    new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()});
+                    typeNode);
             }
         }
 
