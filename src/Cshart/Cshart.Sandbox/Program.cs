@@ -6,10 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using DotNetGraph;
-using DotNetGraph.Attributes;
 using DotNetGraph.Extensions;
-using DotNetGraph.Node;
-using DotNetGraph.SubGraph;
 
 namespace Cshart.Sandbox
 {
@@ -27,7 +24,7 @@ namespace Cshart.Sandbox
             var assembly = assemblies.First(x => x.GetName().Name == a.AssemblyName);
 
             var types = TryGetTypes(assembly).ToArray();
-            var dotGraph = Build(types, assembly.GetName().Name);
+            var dotGraph = Builder.Build(types, assembly.GetName().Name);
 
             var compiledDotGraph = Compile(dotGraph);
             var diagramFileName = $"{a.AssemblyName}.svg";
@@ -102,20 +99,6 @@ namespace Cshart.Sandbox
 
                 return ex.Types.Where(t => t is { })!;
             }
-        }
-
-        private static DotGraph Build(Type[] types, string? assemblyName)
-        {
-            var assemblyGraph = new DotSubGraph(assemblyName);
-            foreach (var type in types)
-            {
-                assemblyGraph.Elements.Add(
-                    new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()});
-            }
-
-            var dotGraph = new DotGraph("foo");
-            dotGraph.Elements.Add(assemblyGraph);
-            return dotGraph;
         }
 
         private static string Compile(DotGraph dotGraph)
