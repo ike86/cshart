@@ -137,7 +137,10 @@ namespace Cshart.Sandbox
             return dotFileFullPath;
         }
 
-        private static void RenderSvg(string dotExePath, string diagramFileName, string dotFileFullPath)
+        private static void RenderSvg(
+            string dotExePath,
+            string diagramFileName,
+            string dotFileFullPath)
         {
             var process =
                 Process.Start(
