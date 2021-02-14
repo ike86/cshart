@@ -48,7 +48,13 @@ namespace Cshart.Sandbox
 
                 var typeNamespace = type.TryGetNamespace() ?? "no namespace";
                 var namespaceCluster =
-                    new DotSubGraph(typeNamespace) {Label = new DotLabelAttribute(typeNamespace)};
+                    assemblyGraph.Elements
+                        .OfType<DotSubGraph>()
+                        .FirstOrDefault(x => x.Identifier == typeNamespace)
+                    ?? new DotSubGraph(typeNamespace)
+                    {
+                        Label = new DotLabelAttribute(typeNamespace)
+                    };
                 namespaceCluster.Elements.Add(typeNode);
                 
                 assemblyGraph.Elements.Add(namespaceCluster);
