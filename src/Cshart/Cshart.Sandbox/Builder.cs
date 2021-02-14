@@ -20,7 +20,7 @@ namespace Cshart.Sandbox
 
             AddEdges(types, assemblyGraph);
             
-            var dotGraph = new DotGraph("foo");
+            var dotGraph = new DotGraph("foo", directed: true);
             dotGraph.Elements.Add(assemblyGraph);
             return dotGraph;
         }
