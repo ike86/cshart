@@ -10,7 +10,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7E05FBCF-8CD0-4968-945E-6833533CEF2C}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		..\..\.gitignore = ..\..\.gitignore
+		..\..\README.md = ..\..\README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cshart.Sandbox", "Cshart.Sandbox\Cshart.Sandbox.csproj", "{A8A332FD-08BC-4511-9E3F-5CFC61922196}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +30,10 @@ Global
 		{716E1014-6A1D-4747-A5CF-0554E24256A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{716E1014-6A1D-4747-A5CF-0554E24256A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{716E1014-6A1D-4747-A5CF-0554E24256A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8A332FD-08BC-4511-9E3F-5CFC61922196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8A332FD-08BC-4511-9E3F-5CFC61922196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8A332FD-08BC-4511-9E3F-5CFC61922196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8A332FD-08BC-4511-9E3F-5CFC61922196}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
