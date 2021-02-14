@@ -2,11 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using DotNetGraph;
+using DotNetGraph.Attributes;
 using DotNetGraph.Extensions;
+using DotNetGraph.Node;
 
 namespace Cshart.Sandbox
 {
@@ -25,7 +28,19 @@ namespace Cshart.Sandbox
 
             var types = TryGetTypes(assembly).ToArray();
             var assemblyName = assembly.GetName().Name!;
-            var dotGraph = new Builder(types, assemblyName).Build();
+            var dotGraph =
+                new Builder(types, assemblyName)
+                    {
+                        StyleTypeNode = (type, typeNode) =>
+                        {
+                            if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl") ?? false)
+                            {
+                                typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
+                                typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
+                            }
+                        }
+                    }
+                    .Build();
 
             var compiledDotGraph = Compile(dotGraph);
             var diagramFileName = $"{a.AssemblyName}.svg";

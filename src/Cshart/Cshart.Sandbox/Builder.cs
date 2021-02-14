@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -23,8 +22,12 @@ namespace Cshart.Sandbox
         {
             this.types = types.ToArray();
             this.assemblyName = assemblyName;
+
+            StyleTypeNode = (_, _) => { };
         }
-        
+
+        public Action<Type, DotNode> StyleTypeNode { init; private get; }
+
         public DotGraph Build()
         {
             var assemblyGraph = new DotSubGraph(assemblyName);
@@ -42,14 +45,8 @@ namespace Cshart.Sandbox
             foreach (var type in types.Where(t => !t.IsCompilerGenerated()))
             {
                 var typeNode = new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()};
-                if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl") ?? false)
-                {
-                    typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
-                    typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
-                }
-
-                assemblyGraph.Elements.Add(
-                    typeNode);
+                StyleTypeNode(type, typeNode);
+                assemblyGraph.Elements.Add(typeNode);
             }
         }
 
