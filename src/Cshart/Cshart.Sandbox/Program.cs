@@ -38,7 +38,7 @@ namespace Cshart.Sandbox
 
             Console.WriteLine("Compiling dot graph...");
             var compiledDotGraph = dotGraph.Compile(indented: true, formatStrings: true);
-            Console.Write(compiledDotGraph);
+            Console.WriteLine(compiledDotGraph);
             
             var diagramFileName = $"{assemblyName}.svg";
             var dotFileName = $"{diagramFileName}.txt";
