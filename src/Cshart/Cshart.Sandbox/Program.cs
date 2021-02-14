@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,7 +36,44 @@ namespace Cshart.Sandbox
             var dotGraph = new DotGraph("foo");
             dotGraph.Elements.Add(assemblyGraph);
 
-            Console.Write(dotGraph.Compile(indented: true, formatStrings: true));
+            Console.WriteLine("Compiling dot graph...");
+            var compiledDotGraph = dotGraph.Compile(indented: true, formatStrings: true);
+            Console.Write(compiledDotGraph);
+            
+            var diagramFileName = arguments[2];
+            Console.WriteLine($"Writing dot graph into {diagramFileName}.txt ..."); 
+            File.WriteAllText($"{diagramFileName}.txt", compiledDotGraph);
+
+            var dotExePath = arguments[3];
+            var dotFileFullPath = Path.GetFullPath($".\\{diagramFileName}.txt");
+            Console.WriteLine($"Dot graph can be found at {dotFileFullPath}");
+
+            if (!File.Exists(dotExePath))
+            {
+                Console.WriteLine($"Could not find file {dotExePath}");
+                return;
+            }
+
+            if (!File.Exists(dotFileFullPath))
+            {
+                Console.WriteLine($"Could not find file {dotFileFullPath}");
+                return;
+            }
+
+            var process =
+                Process.Start(
+                    new ProcessStartInfo
+                    {
+                        CreateNoWindow = true,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        FileName = dotExePath,
+                        Arguments = $"-T svg -o {diagramFileName} \"{dotFileFullPath}\"",
+                    });
+            Console.WriteLine(process.StandardOutput.ReadToEnd());
+            Console.WriteLine(process.StandardError.ReadToEnd());
+            process.WaitForExit();
         }
 
         private static IEnumerable<Type> TryGetTypes(Assembly assembly)
