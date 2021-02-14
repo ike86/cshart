@@ -45,7 +45,14 @@ namespace Cshart.Sandbox
             {
                 var typeNode = new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()};
                 StyleTypeNode(type, typeNode);
-                assemblyGraph.Elements.Add(typeNode);
+
+                var typeNamespace = type.TryGetNamespace() ?? "no namespace";
+                var namespaceCluster =
+                    new DotSubGraph(typeNamespace) {Label = new DotLabelAttribute(typeNamespace)};
+                namespaceCluster.Elements.Add(typeNode);
+                
+                assemblyGraph.Elements.Add(namespaceCluster);
+                // assemblyGraph.Elements.Add(typeNode);
             }
         }
 
@@ -85,7 +92,7 @@ namespace Cshart.Sandbox
             }
         }
 
-        private static IDotElement? TryFindNode(DotSubGraph subGraph, Func<DotNode, bool> predicate)
+        private static DotNode? TryFindNode(DotSubGraph subGraph, Func<DotNode, bool> predicate)
         {
             var maybeNode =
                 subGraph.Elements
@@ -96,10 +103,10 @@ namespace Cshart.Sandbox
                 return maybeNode;
             }
 
-            return
-                subGraph.Elements
-                    .OfType<DotSubGraph>()
-                    .FirstOrDefault(g => TryFindNode(g, predicate) is { });
+            return subGraph.Elements
+                .OfType<DotSubGraph>()
+                .Select(g => TryFindNode(g, predicate))
+                .FirstOrDefault(n => n is { });
 
         }
     }
