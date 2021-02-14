@@ -25,7 +25,7 @@ namespace Cshart.Sandbox
 
             var types = TryGetTypes(assembly).ToArray();
             var assemblyName = assembly.GetName().Name!;
-            var dotGraph = Builder.Build(types, assemblyName);
+            var dotGraph = new Builder(types, assemblyName).Build();
 
             var compiledDotGraph = Compile(dotGraph);
             var diagramFileName = $"{a.AssemblyName}.svg";

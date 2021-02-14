@@ -16,19 +16,28 @@ namespace Cshart.Sandbox
 {
     class Builder
     {
-        public static DotGraph Build(Type[] types, string assemblyName)
+        private readonly IEnumerable<Type> types;
+        private readonly string assemblyName;
+
+        public Builder(IEnumerable<Type> types, string assemblyName)
+        {
+            this.types = types.ToArray();
+            this.assemblyName = assemblyName;
+        }
+        
+        public DotGraph Build()
         {
             var assemblyGraph = new DotSubGraph(assemblyName);
-            AddTypes(types, assemblyGraph);
+            AddTypes(assemblyGraph);
 
-            AddEdges(types, assemblyGraph);
+            AddEdges(assemblyGraph);
             
             var dotGraph = new DotGraph("foo", directed: true);
             dotGraph.Elements.Add(assemblyGraph);
             return dotGraph;
         }
 
-        private static void AddTypes(Type[] types, DotSubGraph assemblyGraph)
+        private void AddTypes(DotSubGraph assemblyGraph)
         {
             foreach (var type in types.Where(t => !t.IsCompilerGenerated()))
             {
@@ -44,7 +53,7 @@ namespace Cshart.Sandbox
             }
         }
 
-        private static void AddEdges(Type[] types, DotSubGraph assemblyGraph)
+        private void AddEdges(DotSubGraph assemblyGraph)
         {
             foreach (var type in types)
             {
