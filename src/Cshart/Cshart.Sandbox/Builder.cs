@@ -87,6 +87,12 @@ namespace Cshart.Sandbox
                         assemblyGraph.Elements.Add(new DotEdge(typeNode, fieldTypeNode));
                     }
                 }
+
+                if (TryGetTypeNode(assemblyGraph, () => type.BaseType!) is { } baseTypeNode)
+                {
+                    assemblyGraph.Elements.Add(
+                        new DotEdge(typeNode, baseTypeNode) {Label = "inherits"});
+                }
             }
         }
 
@@ -94,7 +100,12 @@ namespace Cshart.Sandbox
         {
             try
             {
-                return TryFindNode(assemblyGraph, n => n.Identifier == getType().FullName);
+                if (getType() is not { } type)
+                {
+                    return null;
+                }
+
+                return TryFindNode(assemblyGraph, n => n.Identifier == type.FullName);
             }
             catch (Exception ex)
                 when (ex is FileNotFoundException
