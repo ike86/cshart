@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using DotNetGraph;
 using DotNetGraph.Attributes;
 using DotNetGraph.Core;
@@ -100,6 +101,19 @@ namespace Cshart.Sandbox
                     {
                         assemblyGraph.Elements.Add(
                             new DotEdge(typeNode, interfaceTypeNode) {Label = "implements"});
+                    }
+                }
+
+                foreach (var ctor in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    foreach (var param in ctor.TryGetParameters())
+                    {
+                        if (TryGetTypeNode(assemblyGraph, () => param.ParameterType)
+                            is { } paramTypeNode)
+                        {
+                            assemblyGraph.Elements.Add(
+                                new DotEdge(typeNode, paramTypeNode) {Label = "ctor param"});
+                        }
                     }
                 }
             }

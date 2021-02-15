@@ -54,5 +54,18 @@ namespace Cshart.Sandbox
                 }
             }
         }
+
+        public static IEnumerable<ParameterInfo> TryGetParameters(this ConstructorInfo ctor)
+        {
+            try
+            {
+                return ctor.GetParameters();
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.WriteLine($"Skipping parameters of a constructor type {ctor.DeclaringType} due to {ex}");
+                return Array.Empty<ParameterInfo>();
+            }
+        }
     }
 }
