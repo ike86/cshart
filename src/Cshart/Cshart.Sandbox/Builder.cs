@@ -93,6 +93,15 @@ namespace Cshart.Sandbox
                     assemblyGraph.Elements.Add(
                         new DotEdge(typeNode, baseTypeNode) {Label = "inherits"});
                 }
+
+                foreach (var i in type.GetInterfaces())
+                {
+                    if (TryGetTypeNode(assemblyGraph, () => i) is { } interfaceTypeNode)
+                    {
+                        assemblyGraph.Elements.Add(
+                            new DotEdge(typeNode, interfaceTypeNode) {Label = "implements"});
+                    }
+                }
             }
         }
 
