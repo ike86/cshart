@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using DotNetGraph.Attributes;
 using DotNetGraph.Node;
@@ -18,6 +17,7 @@ namespace Cshart.Sandbox
 
         public void Append(Type type, DotNode typeNode)
         {
+            typeNode.Label = type.Name;
             var typeNamespace = type.TryGetNamespace() ?? "no namespace";
             var namespaceCluster =
                 subGraph.Elements
