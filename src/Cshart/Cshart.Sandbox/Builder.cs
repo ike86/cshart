@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using DotNetGraph;
@@ -51,13 +50,20 @@ namespace Cshart.Sandbox
         private void AddTypes(DotSubGraph assemblyGraph)
         {
             var typeNodeAppender = CreateTypeNodeAppender(assemblyGraph);
-            foreach (var type in types.Where(t => !t.IsCompilerGenerated()))
+            foreach (var type in FilteredTypes())
             {
                 var typeNode = new DotNode(type.FullName) {Shape = new DotNodeShapeAttribute()};
                 StyleTypeNode(type, typeNode);
 
                 typeNodeAppender.Append(type, typeNode);
             }
+        }
+
+        private IEnumerable<Type> FilteredTypes()
+        {
+            return types
+                .Where(t => !t.IsCompilerGenerated())
+                .Where(t => t.Name != "QualityControlStore");
         }
 
         private void AddEdges(DotSubGraph assemblyGraph)
