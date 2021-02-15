@@ -24,11 +24,14 @@ namespace Cshart.Sandbox
 
             StyleTypeNode = (_, _) => { };
             CreateTypeNodeAppender = g => new DefaultTypeNodeAppender(g);
+            FilterTypes = t => true;
         }
 
         public Action<Type, DotNode> StyleTypeNode { init; private get; }
 
         public Func<DotSubGraph, ITypeNodeAppender> CreateTypeNodeAppender { init; private get; }
+
+        public Func<Type, bool> FilterTypes { init; private get; }
 
         public DotGraph Build()
         {
@@ -63,7 +66,7 @@ namespace Cshart.Sandbox
         {
             return types
                 .Where(t => !t.IsCompilerGenerated())
-                .Where(t => t.Name != "QualityControlStore");
+                .Where(FilterTypes);
         }
 
         private void AddEdges(DotSubGraph assemblyGraph)

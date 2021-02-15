@@ -33,6 +33,7 @@ namespace Cshart.Sandbox
             var dotGraph =
                 new Builder(types, assemblyName)
                     {
+                        FilterTypes = t => t.Name != "QualityControlStore",
                         StyleTypeNode = (type, typeNode) =>
                         {
                             if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl") ?? false)
