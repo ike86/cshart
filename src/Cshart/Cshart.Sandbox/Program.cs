@@ -33,10 +33,14 @@ namespace Cshart.Sandbox
             var dotGraph =
                 new Builder(types, assemblyName)
                     {
-                        FilterTypes = t => t.Name != "QualityControlStore",
+                        FilterTypes =
+                            t => t.Name != "QualityControlStore"
+                                 && !(t.TryGetNamespace()?.EndsWith(".Tagging.QualityControl")
+                                      ?? false),
                         StyleTypeNode = (type, typeNode) =>
                         {
-                            if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl") ?? false)
+                            if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl")
+                                ?? false)
                             {
                                 typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
                                 typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
