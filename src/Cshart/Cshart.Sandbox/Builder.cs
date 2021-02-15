@@ -74,7 +74,7 @@ namespace Cshart.Sandbox
             foreach (var type in types)
             {
                 var typeNode = TryGetTypeNode(assemblyGraph, () => type);
-                if (typeNode is not { })
+                if (typeNode is null)
                 {
                     continue;
                 }
