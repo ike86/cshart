@@ -41,11 +41,11 @@ namespace Cshart.Sandbox
                 Label = assemblyName,
                 Style = new DotSubGraphStyleAttribute(DotSubGraphStyle.Rounded),
             };
-            
+
             AddTypes(assemblyGraph);
 
             AddEdges(assemblyGraph);
-            
+
             var dotGraph = new DotGraph("foo", directed: true);
             dotGraph.Elements.Add(assemblyGraph);
             return dotGraph;
@@ -85,7 +85,7 @@ namespace Cshart.Sandbox
                 {
                     if (TryGetTypeNode(assemblyGraph, () => field.FieldType) is { } fieldTypeNode)
                     {
-                        assemblyGraph.Elements.Add(new DotEdge(typeNode, fieldTypeNode));
+                        assemblyGraph.Elements.Add(new DotEdge(typeNode, fieldTypeNode) {Label = "contains"});
                     }
                 }
 
@@ -104,7 +104,8 @@ namespace Cshart.Sandbox
                     }
                 }
 
-                foreach (var ctor in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
+                foreach (var ctor in type.GetConstructors(BindingFlags.Public |
+                                                          BindingFlags.Instance))
                 {
                     foreach (var param in ctor.TryGetParameters())
                     {
@@ -154,7 +155,6 @@ namespace Cshart.Sandbox
                 .OfType<DotSubGraph>()
                 .Select(g => TryFindNode(g, predicate))
                 .FirstOrDefault(n => n is { });
-
         }
     }
 }
