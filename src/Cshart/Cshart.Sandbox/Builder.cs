@@ -12,16 +12,74 @@ using DotNetGraph.SubGraph;
 
 namespace Cshart.Sandbox
 {
-    interface ICanAddEdge
+    public interface IEdgeAddingStrategy
     {
         void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode);
     }
 
-    class CtorParameterTypeEdges
+    public class AddCtorParameterTypeEdges : IEdgeAddingStrategy
     {
+        public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
+        {
+            foreach (var ctor in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
+            {
+                foreach (var param in ctor.TryGetParameters())
+                {
+                    if (assemblyGraph.TryGetTypeNode(() => param.ParameterType)
+                        is { } paramTypeNode)
+                    {
+                        assemblyGraph.Elements.Add(
+                            new DotEdge(typeNode, paramTypeNode) {Label = "ctor param"});
+                    }
+                }
+            }
+        }
+    }
+    
+    public class AddInterfaceImplementationEdges : IEdgeAddingStrategy
+    {
+        public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
+        {
+            foreach (var i in type.GetInterfaces())
+            {
+                if (assemblyGraph.TryGetTypeNode(() => i) is { } interfaceTypeNode)
+                {
+                    assemblyGraph.Elements.Add(
+                        new DotEdge(typeNode, interfaceTypeNode) {Label = "implements"});
+                }
+            }
+        }
     }
 
-    class Builder
+    public class AddInheritanceEdges : IEdgeAddingStrategy
+    {
+        public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
+        {
+            if (assemblyGraph.TryGetTypeNode(() => type.BaseType!) is { } baseTypeNode)
+            {
+                assemblyGraph.Elements.Add(
+                    new DotEdge(typeNode, baseTypeNode) {Label = "inherits"});
+            }
+        }
+    }
+    
+    public class AddFieldReferenceEdges : IEdgeAddingStrategy
+    {
+        public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
+        {
+            var fields = type.TryGetFields().ToArray();
+            foreach (var field in fields)
+            {
+                if (assemblyGraph.TryGetTypeNode(() => field.FieldType) is { } fieldTypeNode)
+                {
+                    assemblyGraph.Elements.Add(
+                        new DotEdge(typeNode, fieldTypeNode) {Label = "contains"});
+                }
+            }
+        }
+    }
+
+    public class Builder
     {
         private readonly IEnumerable<Type> types;
         private readonly string assemblyName;
@@ -41,6 +99,15 @@ namespace Cshart.Sandbox
         public Func<DotSubGraph, ITypeNodeAppender> CreateTypeNodeAppender { init; private get; }
 
         public Func<Type, bool> FilterTypes { init; private get; }
+
+        public ICollection<IEdgeAddingStrategy> EdgeAddingStrategies { get; } =
+            new List<IEdgeAddingStrategy>
+            {
+                new AddFieldReferenceEdges(),
+                new AddInheritanceEdges(),
+                new AddInterfaceImplementationEdges(),
+                new AddCtorParameterTypeEdges()
+            };
 
         public DotGraph Build()
         {
@@ -88,75 +155,9 @@ namespace Cshart.Sandbox
                     continue;
                 }
 
-                AddFieldReferenceEdges(assemblyGraph, type, typeNode);
-
-                AddInheritanceEdges(assemblyGraph, type, typeNode);
-
-                AddInterfaceImplementationEdges(assemblyGraph, type, typeNode);
-
-                AddCtorParameterTypeEdges(assemblyGraph, type, typeNode);
-            }
-        }
-
-        private static void AddCtorParameterTypeEdges(
-            DotSubGraph assemblyGraph,
-            Type type,
-            IDotElement typeNode)
-        {
-            foreach (var ctor in type.GetConstructors(BindingFlags.Public |
-                                                      BindingFlags.Instance))
-            {
-                foreach (var param in ctor.TryGetParameters())
+                foreach (var strategy in EdgeAddingStrategies)
                 {
-                    if (assemblyGraph.TryGetTypeNode(() => param.ParameterType)
-                        is { } paramTypeNode)
-                    {
-                        assemblyGraph.Elements.Add(
-                            new DotEdge(typeNode, paramTypeNode) {Label = "ctor param"});
-                    }
-                }
-            }
-        }
-
-        private static void AddInterfaceImplementationEdges(
-            DotSubGraph assemblyGraph,
-            Type type,
-            IDotElement typeNode)
-        {
-            foreach (var i in type.GetInterfaces())
-            {
-                if (assemblyGraph.TryGetTypeNode(() => i) is { } interfaceTypeNode)
-                {
-                    assemblyGraph.Elements.Add(
-                        new DotEdge(typeNode, interfaceTypeNode) {Label = "implements"});
-                }
-            }
-        }
-
-        private static void AddInheritanceEdges(
-            DotSubGraph assemblyGraph,
-            Type type,
-            IDotElement typeNode)
-        {
-            if (assemblyGraph.TryGetTypeNode(() => type.BaseType!) is { } baseTypeNode)
-            {
-                assemblyGraph.Elements.Add(
-                    new DotEdge(typeNode, baseTypeNode) {Label = "inherits"});
-            }
-        }
-
-        private static void AddFieldReferenceEdges(
-            DotSubGraph assemblyGraph,
-            Type type,
-            IDotElement typeNode)
-        {
-            var fields = type.TryGetFields().ToArray();
-            foreach (var field in fields)
-            {
-                if (assemblyGraph.TryGetTypeNode(() => field.FieldType) is { } fieldTypeNode)
-                {
-                    assemblyGraph.Elements.Add(
-                        new DotEdge(typeNode, fieldTypeNode) {Label = "contains"});
+                    strategy.AddEdges(assemblyGraph, type, typeNode);
                 }
             }
         }
