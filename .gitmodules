@@ -1,0 +1,4 @@
+[submodule "src/DotNetGraph"]
+	path = src/DotNetGraph
+	url = https://github.com/ike86/DotNetGraph.git
+	branch = master
