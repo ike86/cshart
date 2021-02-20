@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="DotNetGraph" Version="2.6.0" />
+      <ProjectReference Include="..\..\DotNetGraph\Sources\DotNetGraph\DotNetGraph.csproj" />
     </ItemGroup>
 
 </Project>
