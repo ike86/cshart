@@ -62,6 +62,8 @@ namespace Cshart.Sandbox
             // var dotFileName = $"{diagramFileName}.txt";
             // var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
             RenderSvg(a.DotExePath, diagramFileName, dotFileFullPath);
+
+            OpenDiagram(diagramFileName);
         }
 
         private static Arguments? LoadArguments(string arg)
@@ -171,6 +173,19 @@ namespace Cshart.Sandbox
             Console.WriteLine(process.StandardOutput.ReadToEnd());
             Console.WriteLine(process.StandardError.ReadToEnd());
             process.WaitForExit();
+        }
+
+        private static void OpenDiagram(string diagramFileName)
+        {
+            new Process
+                {
+                    StartInfo =
+                    {
+                        UseShellExecute = true,
+                        FileName = Path.GetFullPath($".\\{diagramFileName}")
+                    }
+                }
+                .Start();
         }
     }
 }
