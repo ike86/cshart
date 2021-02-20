@@ -74,7 +74,7 @@ namespace Cshart.Sandbox
         {
             foreach (var type in types)
             {
-                var typeNode = TryGetTypeNode(assemblyGraph, () => type);
+                var typeNode = assemblyGraph.TryGetTypeNode(() => type);
                 if (typeNode is null)
                 {
                     continue;
@@ -100,7 +100,7 @@ namespace Cshart.Sandbox
             {
                 foreach (var param in ctor.TryGetParameters())
                 {
-                    if (TryGetTypeNode(assemblyGraph, () => param.ParameterType)
+                    if (assemblyGraph.TryGetTypeNode(() => param.ParameterType)
                         is { } paramTypeNode)
                     {
                         assemblyGraph.Elements.Add(
@@ -117,7 +117,7 @@ namespace Cshart.Sandbox
         {
             foreach (var i in type.GetInterfaces())
             {
-                if (TryGetTypeNode(assemblyGraph, () => i) is { } interfaceTypeNode)
+                if (assemblyGraph.TryGetTypeNode(() => i) is { } interfaceTypeNode)
                 {
                     assemblyGraph.Elements.Add(
                         new DotEdge(typeNode, interfaceTypeNode) {Label = "implements"});
@@ -130,7 +130,7 @@ namespace Cshart.Sandbox
             Type type,
             IDotElement typeNode)
         {
-            if (TryGetTypeNode(assemblyGraph, () => type.BaseType!) is { } baseTypeNode)
+            if (assemblyGraph.TryGetTypeNode(() => type.BaseType!) is { } baseTypeNode)
             {
                 assemblyGraph.Elements.Add(
                     new DotEdge(typeNode, baseTypeNode) {Label = "inherits"});
@@ -145,15 +145,20 @@ namespace Cshart.Sandbox
             var fields = type.TryGetFields().ToArray();
             foreach (var field in fields)
             {
-                if (TryGetTypeNode(assemblyGraph, () => field.FieldType) is { } fieldTypeNode)
+                if (assemblyGraph.TryGetTypeNode(() => field.FieldType) is { } fieldTypeNode)
                 {
                     assemblyGraph.Elements.Add(
                         new DotEdge(typeNode, fieldTypeNode) {Label = "contains"});
                 }
             }
         }
+    }
 
-        private static IDotElement? TryGetTypeNode(DotSubGraph assemblyGraph, Func<Type> getType)
+    public static class DotSubGraphExtensions
+    {
+        public static IDotElement? TryGetTypeNode(
+            this DotSubGraph assemblyGraph,
+            Func<Type> getType)
         {
             try
             {
@@ -162,7 +167,7 @@ namespace Cshart.Sandbox
                     return null;
                 }
 
-                return TryFindNode(assemblyGraph, n => n.Identifier == type.FullName);
+                return assemblyGraph.TryFindNode(n => n.Identifier == type.FullName);
             }
             catch (Exception ex)
                 when (ex is FileNotFoundException
@@ -173,7 +178,7 @@ namespace Cshart.Sandbox
             }
         }
 
-        private static DotNode? TryFindNode(DotSubGraph subGraph, Func<DotNode, bool> predicate)
+        public static DotNode? TryFindNode(this DotSubGraph subGraph, Func<DotNode, bool> predicate)
         {
             var maybeNode =
                 subGraph.Elements
