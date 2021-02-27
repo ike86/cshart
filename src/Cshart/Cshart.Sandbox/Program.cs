@@ -53,7 +53,7 @@ namespace Cshart.Sandbox
                                 new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
                                 new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
                                 new AddInterfaceImplementationEdges(new[] {new EdgeLenAttribute(4)}),
-                                new AddCtorParameterTypeEdges()
+                                new AddCtorParameterTypeEdges(new []{new EdgeLenAttribute(3)})
                             }
                     }
                     .Build();
@@ -147,8 +147,7 @@ namespace Cshart.Sandbox
                                 IsIndented = true,
                                 ShouldFormatStrings = true,
                                 ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
-                            })
-                .Replace(@"[label=""ctor param""]", @"[label=""ctor param"",len=3]");
+                            });
 
             Console.WriteLine(compiledDotGraph);
             return compiledDotGraph;
