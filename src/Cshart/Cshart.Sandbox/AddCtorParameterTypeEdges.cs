@@ -15,7 +15,6 @@ namespace Cshart.Sandbox
         public AddCtorParameterTypeEdges()
             : this(Enumerable.Empty<IDotAttribute>())
         {
-            
         }
 
         public AddCtorParameterTypeEdges(IEnumerable<IDotAttribute> attributes)
@@ -35,15 +34,10 @@ namespace Cshart.Sandbox
                     if (assemblyGraph.TryGetTypeNode(() => param.ParameterType)
                         is { } paramTypeNode)
                     {
-                        var edge = new DotEdge(typeNode, paramTypeNode);
-                        ConfigureEdge(edge);
-                        edge = attributes.Aggregate(edge, (e, a) =>
-                        {
-                            e.SetAttribute(a);
-                            return e;
-                        });
-                        assemblyGraph.Elements.Add(
-                            edge);
+                        var edge =
+                            new EdgeFactory(attributes, ConfigureEdge)
+                                .Create(typeNode, paramTypeNode);
+                        assemblyGraph.Elements.Add(edge);
                     }
                 }
             }

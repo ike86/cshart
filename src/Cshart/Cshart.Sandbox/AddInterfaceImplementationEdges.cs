@@ -30,15 +30,10 @@ namespace Cshart.Sandbox
             {
                 if (assemblyGraph.TryGetTypeNode(() => i) is { } interfaceTypeNode)
                 {
-                    var edge = new DotEdge(typeNode, interfaceTypeNode);
-                    ConfigureEdge(edge);
-                    edge = attributes.Aggregate(edge, (e, a) =>
-                    {
-                        e.SetAttribute(a);
-                        return e;
-                    });
-                    assemblyGraph.Elements.Add(
-                        edge);
+                    var edge =
+                        new EdgeFactory(attributes, ConfigureEdge)
+                            .Create(typeNode, interfaceTypeNode);
+                    assemblyGraph.Elements.Add(edge);
                 }
             }
         }
