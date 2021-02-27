@@ -23,6 +23,9 @@ namespace Cshart.Sandbox
             this.attributes = attributes.ToArray();
         }
 
+        public Action<DotEdge> ConfigureEdge { set; private get; } =
+            edge => edge.Label = "ctor param";
+
         public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
         {
             foreach (var ctor in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance))
@@ -32,7 +35,8 @@ namespace Cshart.Sandbox
                     if (assemblyGraph.TryGetTypeNode(() => param.ParameterType)
                         is { } paramTypeNode)
                     {
-                        var edge = new DotEdge(typeNode, paramTypeNode) {Label = "ctor param"};
+                        var edge = new DotEdge(typeNode, paramTypeNode);
+                        ConfigureEdge(edge);
                         edge = attributes.Aggregate(edge, (e, a) =>
                         {
                             e.SetAttribute(a);

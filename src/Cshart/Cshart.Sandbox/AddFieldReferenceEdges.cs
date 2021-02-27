@@ -19,6 +19,9 @@ namespace Cshart.Sandbox
         {
             this.attributes = attributes.ToArray();
         }
+
+        public Action<DotEdge> ConfigureEdge { set; private get; } =
+            edge => edge.Label = "contains";
         
         public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
         {
@@ -27,7 +30,8 @@ namespace Cshart.Sandbox
             {
                 if (assemblyGraph.TryGetTypeNode(() => field.FieldType) is { } fieldTypeNode)
                 {
-                    var edge = new DotEdge(typeNode, fieldTypeNode) {Label = "contains"};
+                    var edge = new DotEdge(typeNode, fieldTypeNode);
+                    ConfigureEdge(edge);
                     edge = attributes.Aggregate(edge, (e, a) =>
                     {
                         e.SetAttribute(a);

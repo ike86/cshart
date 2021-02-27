@@ -21,13 +21,17 @@ namespace Cshart.Sandbox
             this.attributes = attributes.ToArray();
         }
 
+        public Action<DotEdge> ConfigureEdge { set; private get; } =
+            edge => edge.Label = "implements";
+
         public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
         {
             foreach (var i in type.GetInterfaces())
             {
                 if (assemblyGraph.TryGetTypeNode(() => i) is { } interfaceTypeNode)
                 {
-                    var edge = new DotEdge(typeNode, interfaceTypeNode) {Label = "implements"};
+                    var edge = new DotEdge(typeNode, interfaceTypeNode);
+                    ConfigureEdge(edge);
                     edge = attributes.Aggregate(edge, (e, a) =>
                     {
                         e.SetAttribute(a);

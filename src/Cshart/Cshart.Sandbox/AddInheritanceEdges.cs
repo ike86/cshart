@@ -21,11 +21,15 @@ namespace Cshart.Sandbox
             this.attributes = attributes.ToArray();
         }
 
+        public Action<DotEdge> ConfigureEdge { set; private get; } =
+            edge => edge.Label = "inherits";
+
         public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
         {
             if (assemblyGraph.TryGetTypeNode(() => type.BaseType!) is { } baseTypeNode)
             {
-                var edge = new DotEdge(typeNode, baseTypeNode) {Label = "inherits"};
+                var edge = new DotEdge(typeNode, baseTypeNode);
+                ConfigureEdge(edge);
                 edge = attributes.Aggregate(edge, (e, a) =>
                 {
                     e.SetAttribute(a);
