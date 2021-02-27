@@ -51,7 +51,7 @@ namespace Cshart.Sandbox
                             new List<IEdgeAddingStrategy>
                             {
                                 new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
-                                new AddInheritanceEdges(),
+                                new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
                                 new AddInterfaceImplementationEdges(),
                                 new AddCtorParameterTypeEdges()
                             }
@@ -148,7 +148,6 @@ namespace Cshart.Sandbox
                                 ShouldFormatStrings = true,
                                 ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
                             })
-                .Replace(@"[label=""inherits""]", @"[label=""inherits"",len=1]")
                 .Replace(@"[label=""ctor param""]", @"[label=""ctor param"",len=3]")
                 .Replace(@"[label=""implements""]", @"[label=""implements"",len=4]");
 
