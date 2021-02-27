@@ -47,6 +47,14 @@ namespace Cshart.Sandbox
                             }
                         },
                         CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
+                        EdgeAddingStrategies =
+                            new List<IEdgeAddingStrategy>
+                            {
+                                new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
+                                new AddInheritanceEdges(),
+                                new AddInterfaceImplementationEdges(),
+                                new AddCtorParameterTypeEdges()
+                            }
                     }
                     .Build();
             
@@ -132,9 +140,15 @@ namespace Cshart.Sandbox
         private static string Compile(DotGraph dotGraph)
         {
             Console.WriteLine("Compiling dot graph...");
-            var compiledDotGraph = dotGraph.Compile(indented: true, formatStrings: true)
+            var compiledDotGraph =
+                dotGraph.Compile(
+                        new CompilerSettings
+                            {
+                                IsIndented = true,
+                                ShouldFormatStrings = true,
+                                ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
+                            })
                 .Replace(@"[label=""inherits""]", @"[label=""inherits"",len=1]")
-                .Replace(@"[label=""contains""]", @"[label=""contains"",len=2]")
                 .Replace(@"[label=""ctor param""]", @"[label=""ctor param"",len=3]")
                 .Replace(@"[label=""implements""]", @"[label=""implements"",len=4]");
 

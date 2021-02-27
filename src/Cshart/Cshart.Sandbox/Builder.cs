@@ -30,7 +30,7 @@ namespace Cshart.Sandbox
 
         public Func<Type, bool> FilterTypes { init; private get; }
 
-        public ICollection<IEdgeAddingStrategy> EdgeAddingStrategies { get; } =
+        public ICollection<IEdgeAddingStrategy> EdgeAddingStrategies { init; private get; } =
             new List<IEdgeAddingStrategy>
             {
                 new AddFieldReferenceEdges(),
