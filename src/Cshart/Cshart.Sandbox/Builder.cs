@@ -12,12 +12,12 @@ namespace Cshart.Sandbox
     public class Builder
     {
         private readonly IEnumerable<Type> types;
-        private readonly string assemblyName;
+        private readonly string chartName;
 
-        public Builder(IEnumerable<Type> types, string assemblyName)
+        public Builder(IEnumerable<Type> types, string chartName)
         {
             this.types = types.ToArray();
-            this.assemblyName = assemblyName;
+            this.chartName = chartName;
 
             StyleTypeNode = (_, _) => { };
             CreateTypeNodeAppender = g => new DefaultTypeNodeAppender(g);
@@ -41,9 +41,9 @@ namespace Cshart.Sandbox
 
         public DotGraph Build()
         {
-            var assemblyGraph = new DotSubGraph(assemblyName)
+            var assemblyGraph = new DotSubGraph(chartName)
             {
-                Label = assemblyName,
+                Label = chartName,
                 Style = new DotSubGraphStyleAttribute(DotSubGraphStyle.Rounded),
             };
 
