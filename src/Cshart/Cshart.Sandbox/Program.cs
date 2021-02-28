@@ -41,8 +41,9 @@ namespace Cshart.Sandbox
 
             // generic logic
             var b = new BigThing(types, chartName, a.DotExePath);
-            b.BuildRenderShow(
-                CreateNeatoSettings(filterTypes, styleTypeNode)); 
+            Func<Func<Type, bool>,Action<Type, DotNode>, BuildRenderSettings> createSettings =
+                CreateNeatoSettings;
+            b.BuildRenderShow(createSettings(filterTypes, styleTypeNode)); 
         }
 
         private static BuildRenderSettings CreateNeatoSettings(
