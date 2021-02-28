@@ -21,7 +21,7 @@ namespace Cshart.Sandbox
         }
 
         public Action<DotEdge> ConfigureEdge { set; private get; } =
-            edge => edge.Label = "contains";
+            edge => edge.ArrowHead = DotEdgeArrowType.EDiamond;
         
         public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
         {

@@ -22,7 +22,11 @@ namespace Cshart.Sandbox
         }
 
         public Action<DotEdge> ConfigureEdge { set; private get; } =
-            edge => edge.Label = "implements";
+            edge =>
+            {
+                edge.ArrowHead = DotEdgeArrowType.Open;
+                edge.Style = DotEdgeStyle.Dashed;
+            };
 
         public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
         {

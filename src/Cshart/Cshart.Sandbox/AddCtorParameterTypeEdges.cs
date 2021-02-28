@@ -23,7 +23,7 @@ namespace Cshart.Sandbox
         }
 
         public Action<DotEdge> ConfigureEdge { set; private get; } =
-            edge => edge.Label = "ctor param";
+            edge => edge.ArrowHead = DotEdgeArrowType.Open;
 
         public void AddEdges(DotSubGraph assemblyGraph, Type type, IDotElement typeNode)
         {
