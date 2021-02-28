@@ -12,6 +12,7 @@ namespace Cshart.Sandbox
             Action<Type, DotNode> styleTypeNode)
         {
             return new BuildRenderSettings(
+                "dot",
                 (ts, cn)
                     => new Builder(ts, cn)
                     {
@@ -32,8 +33,7 @@ namespace Cshart.Sandbox
                     IsIndented = true,
                     ShouldFormatStrings = true,
                 },
-                "svg",
-                "dot");
+                "svg");
         }
     }
 }

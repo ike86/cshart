@@ -12,6 +12,7 @@ namespace Cshart.Sandbox
             Action<Type, DotNode> styleTypeNode)
         {
             return new BuildRenderSettings(
+                "neato",
                 (ts, cn)
                     => new Builder(ts, cn)
                     {
@@ -34,8 +35,7 @@ namespace Cshart.Sandbox
                     ShouldFormatStrings = true,
                     ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
                 },
-                "svg",
-                "neato");
+                "svg");
         }
     }
 }

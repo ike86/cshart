@@ -7,10 +7,10 @@ namespace Cshart.Sandbox
     internal class BuildRenderSettings
     {
         public BuildRenderSettings(
+            string layout,
             Func<IEnumerable<Type>, string, Builder> createBuilder,
             CompilerSettings compilerSettings,
-            string renderFormat,
-            string layout)
+            string renderFormat)
         {
             CreateBuilder = createBuilder;
             CompilerSettings = compilerSettings;
