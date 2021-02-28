@@ -20,16 +20,16 @@ namespace Cshart.Sandbox
         }
         
         public void BuildRenderShow(
-            Func<IEnumerable<Type>, string, Builder> CreateNeatoBuilder,
-            CompilerSettings neatoCompilerSettings,
-            string neatoRenderFormat,
+            Func<IEnumerable<Type>, string, Builder> createBuilder,
+            CompilerSettings compilerSettings,
+            string renderFormat,
             string dotExePath,
-            string neatoLayout,
+            string layout,
             string format)
         {
-            var dotGraph = CreateNeatoBuilder(types, chartName).Build();
-            var compiledDotGraph = Compile(dotGraph, neatoCompilerSettings);
-            var diagramFileName = $"{chartName}.{neatoRenderFormat}";
+            var dotGraph = createBuilder(types, chartName).Build();
+            var compiledDotGraph = Compile(dotGraph, compilerSettings);
+            var diagramFileName = $"{chartName}.{renderFormat}";
             var dotFileFullPath = OutputDotFile(diagramFileName, compiledDotGraph);
             if (!File.Exists(dotFileFullPath))
             {
@@ -39,7 +39,7 @@ namespace Cshart.Sandbox
 
             // var dotFileName = $"{diagramFileName}.txt";
             // var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
-            RenderSvg(dotExePath, diagramFileName, dotFileFullPath, neatoLayout, format);
+            RenderSvg(dotExePath, diagramFileName, dotFileFullPath, layout, format);
 
             OpenDiagram(diagramFileName);
         }
