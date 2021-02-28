@@ -22,15 +22,11 @@ namespace Cshart.Sandbox
             this.dotExePath = dotExePath;
         }
         
-        public void BuildRenderShow(
-            Func<IEnumerable<Type>, string, Builder> createBuilder,
-            CompilerSettings compilerSettings,
-            string renderFormat,
-            string layout)
+        public void BuildRenderShow(BuildRenderSettings settings)
         {
-            var dotGraph = createBuilder(types, chartName).Build();
-            var compiledDotGraph = Compile(dotGraph, compilerSettings);
-            var diagramFileName = $"{chartName}.{renderFormat}";
+            var dotGraph = settings.CreateBuilder(types, chartName).Build();
+            var compiledDotGraph = Compile(dotGraph, settings.CompilerSettings);
+            var diagramFileName = $"{chartName}.{settings.RenderFormat}";
             var dotFileFullPath = OutputDotFile(diagramFileName, compiledDotGraph);
             if (!File.Exists(dotFileFullPath))
             {
@@ -38,7 +34,12 @@ namespace Cshart.Sandbox
                 return;
             }
 
-            RenderSvg(dotExePath, diagramFileName, dotFileFullPath, layout, renderFormat);
+            RenderSvg(
+                dotExePath,
+                diagramFileName,
+                dotFileFullPath,
+                settings.Layout,
+                settings.RenderFormat);
 
             OpenDiagram(diagramFileName);
         }

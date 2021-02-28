@@ -69,10 +69,11 @@ namespace Cshart.Sandbox
             // generic logic
             var b = new BigThing(types, chartName, a.DotExePath);
             b.BuildRenderShow(
-                CreateNeatoBuilder,
-                neatoCompilerSettings,
-                neatoRenderFormat,
-                neatoLayout);
+                new BuildRenderSettings(
+                    CreateNeatoBuilder,
+                    neatoCompilerSettings,
+                    neatoRenderFormat,
+                    neatoLayout)); 
         }
 
         private static Arguments? LoadArguments(string arg)
