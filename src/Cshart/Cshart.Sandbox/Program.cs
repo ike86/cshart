@@ -10,6 +10,10 @@ using DotNetGraph.Node;
 
 namespace Cshart.Sandbox
 {
+    delegate BuildRenderSettings BuildRenderSettingsFactory(
+        Func<Type, bool> filterTypes,
+        Action<Type, DotNode> styleTypeNode);
+    
     class Program
     {
         static void Main(string[] args)
@@ -40,7 +44,7 @@ namespace Cshart.Sandbox
 
             // generic logic
             var b = new BigThing(types, chartName, a.DotExePath);
-            Func<Func<Type, bool>,Action<Type, DotNode>, BuildRenderSettings> createSettings = NeatoSettingsFactory.CreateNeatoSettings;
+            BuildRenderSettingsFactory createSettings = NeatoSettingsFactory.CreateNeatoSettings;
             b.BuildRenderShow(createSettings(filterTypes, styleTypeNode)); 
         }
 
