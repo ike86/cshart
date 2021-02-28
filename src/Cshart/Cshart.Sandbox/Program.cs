@@ -1,12 +1,10 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using DotNetGraph;
 using DotNetGraph.Attributes;
 using DotNetGraph.Extensions;
 using DotNetGraph.Node;
@@ -69,21 +67,14 @@ namespace Cshart.Sandbox
             var neatoLayout = "neato";
 
             // generic logic
-            var dotGraph = CreateNeatoBuilder(types,chartName).Build();
-            var compiledDotGraph = Compile(dotGraph, neatoCompilerSettings);
-            var diagramFileName = $"{a.AssemblyName}.{neatoRenderFormat}";
-            var dotFileFullPath = OutputDotFile(diagramFileName, compiledDotGraph);
-            if (!File.Exists(dotFileFullPath))
-            {
-                Console.WriteLine($"Could not find file {dotFileFullPath}");
-                return;
-            }
-
-            // var dotFileName = $"{diagramFileName}.txt";
-            // var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
-            RenderSvg(a.DotExePath, diagramFileName, dotFileFullPath, neatoLayout);
-
-            OpenDiagram(diagramFileName);
+            BigThing.BuildRenderShow(
+                CreateNeatoBuilder,
+                types,
+                chartName,
+                neatoCompilerSettings,
+                neatoRenderFormat,
+                a.DotExePath,
+                neatoLayout, Format);
         }
 
         private static Arguments? LoadArguments(string arg)
@@ -147,61 +138,6 @@ namespace Cshart.Sandbox
 
                 return ex.Types.Where(t => t is { })!;
             }
-        }
-
-        private static string Compile(DotGraph dotGraph, CompilerSettings compilerSettings)
-        {
-            Console.WriteLine("Compiling dot graph...");
-            var compiledDotGraph = dotGraph.Compile(compilerSettings);
-            Console.WriteLine(compiledDotGraph);
-            return compiledDotGraph;
-        }
-
-        private static string OutputDotFile(string diagramFileName, string compiledDotGraph)
-        {
-            var dotFileName = $"{diagramFileName}.txt";
-            Console.WriteLine($"Writing dot graph into {dotFileName} ...");
-            File.WriteAllText(dotFileName, compiledDotGraph);
-
-            var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
-            Console.WriteLine($"Dot graph can be found at {dotFileFullPath}");
-            return dotFileFullPath;
-        }
-
-        private static void RenderSvg(
-            string dotExePath,
-            string diagramFileName,
-            string dotFileFullPath,
-            string layout)
-        {
-            var process =
-                Process.Start(
-                    new ProcessStartInfo
-                    {
-                        CreateNoWindow = true,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        FileName = dotExePath,
-                        //Arguments = $"-T {Format} -o {diagramFileName} \"{dotFileFullPath}\"",
-                        Arguments = $"-K{layout} -T {Format} -o {diagramFileName} \"{dotFileFullPath}\"",
-                    })!;
-            Console.WriteLine(process.StandardOutput.ReadToEnd());
-            Console.WriteLine(process.StandardError.ReadToEnd());
-            process.WaitForExit();
-        }
-
-        private static void OpenDiagram(string diagramFileName)
-        {
-            new Process
-                {
-                    StartInfo =
-                    {
-                        UseShellExecute = true,
-                        FileName = Path.GetFullPath($".\\{diagramFileName}")
-                    }
-                }
-                .Start();
         }
     }
 }
