@@ -44,11 +44,24 @@ namespace Cshart.Sandbox
 
             // generic logic
             var b = new BigThing(types, chartName, a.DotExePath);
-            BuildRenderSettingsFactory createSettings = NeatoSettingsFactory.CreateNeatoSettings;
-            b.BuildRenderShow(createSettings(filterTypes, styleTypeNode)); 
+            foreach (var createSettings in
+                new BuildRenderSettingsFactory[]
+                {
+                    DotSettingsFactory.CreateSettings,
+                    NeatoSettingsFactory.CreateNeatoSettings,
+                    new DefaultSettingsFactory("twopi").CreateSettings,
+                    new DefaultSettingsFactory("circo").CreateSettings,
+                    new DefaultSettingsFactory("fdp").CreateSettings,
+                    new DefaultSettingsFactory("sfdp").CreateSettings,
+                    new DefaultSettingsFactory("patchwork").CreateSettings,
+                    new DefaultSettingsFactory("osage").CreateSettings,
+                })
+            {
+                b.BuildRenderShow(createSettings(filterTypes, styleTypeNode));
+            }
         }
 
-        private static Program.Arguments? LoadArguments(string arg)
+        private static Arguments? LoadArguments(string arg)
         {
             var arguments = File.ReadAllLines(arg);
 
@@ -62,7 +75,7 @@ namespace Cshart.Sandbox
                 return null;
             }
 
-            return new Program.Arguments(pathOfDirectory, assemblyName, dotExePath);
+            return new Arguments(pathOfDirectory, assemblyName, dotExePath);
         }
 
         private record Arguments(string PathOfDirectory, string AssemblyName, string DotExePath);
