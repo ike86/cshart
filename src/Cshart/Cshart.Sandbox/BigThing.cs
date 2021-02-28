@@ -24,8 +24,7 @@ namespace Cshart.Sandbox
             CompilerSettings compilerSettings,
             string renderFormat,
             string dotExePath,
-            string layout,
-            string format)
+            string layout)
         {
             var dotGraph = createBuilder(types, chartName).Build();
             var compiledDotGraph = Compile(dotGraph, compilerSettings);
@@ -37,7 +36,7 @@ namespace Cshart.Sandbox
                 return;
             }
 
-            RenderSvg(dotExePath, diagramFileName, dotFileFullPath, layout, format);
+            RenderSvg(dotExePath, diagramFileName, dotFileFullPath, layout, renderFormat);
 
             OpenDiagram(diagramFileName);
         }

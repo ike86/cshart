@@ -73,7 +73,7 @@ namespace Cshart.Sandbox
                 neatoCompilerSettings,
                 neatoRenderFormat,
                 a.DotExePath,
-                neatoLayout, Format);
+                neatoLayout);
         }
 
         private static Arguments? LoadArguments(string arg)
