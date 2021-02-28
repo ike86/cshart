@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using DotNetGraph;
 using DotNetGraph.Extensions;
 
@@ -9,10 +10,17 @@ namespace Cshart.Sandbox
 {
     class BigThing
     {
-        public static void BuildRenderShow(
+        private readonly IEnumerable<Type> types;
+        private readonly string chartName;
+
+        public BigThing(IEnumerable<Type> types, string chartName)
+        {
+            this.types = types.ToArray();
+            this.chartName = chartName;
+        }
+        
+        public void BuildRenderShow(
             Func<IEnumerable<Type>, string, Builder> CreateNeatoBuilder,
-            Type[] types,
-            string chartName,
             CompilerSettings neatoCompilerSettings,
             string neatoRenderFormat,
             string dotExePath,

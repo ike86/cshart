@@ -67,10 +67,9 @@ namespace Cshart.Sandbox
             var neatoLayout = "neato";
 
             // generic logic
-            BigThing.BuildRenderShow(
+            var b = new BigThing(types, chartName);
+            b.BuildRenderShow(
                 CreateNeatoBuilder,
-                types,
-                chartName,
                 neatoCompilerSettings,
                 neatoRenderFormat,
                 a.DotExePath,
