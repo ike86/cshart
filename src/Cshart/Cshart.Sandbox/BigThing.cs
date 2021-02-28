@@ -13,18 +13,19 @@ namespace Cshart.Sandbox
     {
         private readonly IEnumerable<Type> types;
         private readonly string chartName;
+        private readonly string dotExePath;
 
-        public BigThing(IEnumerable<Type> types, string chartName)
+        public BigThing(IEnumerable<Type> types, string chartName, string dotExePath)
         {
             this.types = types.ToArray();
             this.chartName = chartName;
+            this.dotExePath = dotExePath;
         }
         
         public void BuildRenderShow(
             Func<IEnumerable<Type>, string, Builder> createBuilder,
             CompilerSettings compilerSettings,
             string renderFormat,
-            string dotExePath,
             string layout)
         {
             var dotGraph = createBuilder(types, chartName).Build();
