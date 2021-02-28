@@ -19,47 +19,59 @@ namespace Cshart.Sandbox
         
         static void Main(string[] args)
         {
+            // specific, user logic
             if (LoadArguments(args[0]) is not { } a)
             {
                 return;
             }
 
             var assemblies = TryLoadAssembliesFrom(a.PathOfDirectory);
-            
             var assembly = assemblies.First(x => x.GetName().Name == a.AssemblyName);
-            
             var types = TryGetTypes(assembly).ToArray();
-            var assemblyName = assembly.GetName().Name!;
-            var dotGraph =
-                new Builder(types, assemblyName)
+            var chartName = assembly.GetName().Name!;
+
+            var neatoCompilerSettings = new CompilerSettings
+            {
+                IsIndented = true,
+                ShouldFormatStrings = true,
+                ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
+            };
+            Func<IEnumerable<Type>, string, Builder> CreateNeatoBuilder = (ts, cn)
+                => new Builder(ts, cn)
+                {
+                    FilterTypes =
+                        t => t.Name != "QualityControlStore"
+                             && !(t.TryGetNamespace()?.EndsWith(".Tagging.QualityControl")
+                                  ?? false),
+                    StyleTypeNode = (type, typeNode) =>
                     {
-                        FilterTypes =
-                            t => t.Name != "QualityControlStore"
-                                 && !(t.TryGetNamespace()?.EndsWith(".Tagging.QualityControl")
-                                      ?? false),
-                        StyleTypeNode = (type, typeNode) =>
+                        if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl")
+                            ?? false)
                         {
-                            if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl")
-                                ?? false)
+                            typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
+                            typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
+                        }
+                    },
+                    CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
+                    EdgeAddingStrategies =
+                        new List<IEdgeAddingStrategy>
+                        {
+                            new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
+                            new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
+                            new AddInterfaceImplementationEdges(new[]
                             {
-                                typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
-                                typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
-                            }
-                        },
-                        CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
-                        EdgeAddingStrategies =
-                            new List<IEdgeAddingStrategy>
-                            {
-                                new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
-                                new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
-                                new AddInterfaceImplementationEdges(new[] {new EdgeLenAttribute(4)}),
-                                new AddCtorParameterTypeEdges(new []{new EdgeLenAttribute(3)})
-                            }
-                    }
-                    .Build();
-            
-            var compiledDotGraph = Compile(dotGraph);
-            var diagramFileName = $"{a.AssemblyName}.{Format}";
+                                new EdgeLenAttribute(4)
+                            }),
+                            new AddCtorParameterTypeEdges(new[] {new EdgeLenAttribute(3)})
+                        }
+                };
+            var neatoRenderFormat = Format;
+            var neatoLayout = "neato";
+
+            // generic logic
+            var dotGraph = CreateNeatoBuilder(types,chartName).Build();
+            var compiledDotGraph = Compile(dotGraph, neatoCompilerSettings);
+            var diagramFileName = $"{a.AssemblyName}.{neatoRenderFormat}";
             var dotFileFullPath = OutputDotFile(diagramFileName, compiledDotGraph);
             if (!File.Exists(dotFileFullPath))
             {
@@ -69,7 +81,7 @@ namespace Cshart.Sandbox
 
             // var dotFileName = $"{diagramFileName}.txt";
             // var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
-            RenderSvg(a.DotExePath, diagramFileName, dotFileFullPath);
+            RenderSvg(a.DotExePath, diagramFileName, dotFileFullPath, neatoLayout);
 
             OpenDiagram(diagramFileName);
         }
@@ -137,18 +149,10 @@ namespace Cshart.Sandbox
             }
         }
 
-        private static string Compile(DotGraph dotGraph)
+        private static string Compile(DotGraph dotGraph, CompilerSettings compilerSettings)
         {
             Console.WriteLine("Compiling dot graph...");
-            var compiledDotGraph =
-                dotGraph.Compile(
-                        new CompilerSettings
-                            {
-                                IsIndented = true,
-                                ShouldFormatStrings = true,
-                                ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
-                            });
-
+            var compiledDotGraph = dotGraph.Compile(compilerSettings);
             Console.WriteLine(compiledDotGraph);
             return compiledDotGraph;
         }
@@ -167,7 +171,8 @@ namespace Cshart.Sandbox
         private static void RenderSvg(
             string dotExePath,
             string diagramFileName,
-            string dotFileFullPath)
+            string dotFileFullPath,
+            string layout)
         {
             var process =
                 Process.Start(
@@ -179,7 +184,7 @@ namespace Cshart.Sandbox
                         RedirectStandardError = true,
                         FileName = dotExePath,
                         //Arguments = $"-T {Format} -o {diagramFileName} \"{dotFileFullPath}\"",
-                        Arguments = $"-Kneato -T {Format} -o {diagramFileName} \"{dotFileFullPath}\"",
+                        Arguments = $"-K{layout} -T {Format} -o {diagramFileName} \"{dotFileFullPath}\"",
                     })!;
             Console.WriteLine(process.StandardOutput.ReadToEnd());
             Console.WriteLine(process.StandardError.ReadToEnd());
