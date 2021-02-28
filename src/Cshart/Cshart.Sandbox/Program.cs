@@ -48,7 +48,7 @@ namespace Cshart.Sandbox
                 new BuildRenderSettingsFactory[]
                 {
                     DotSettingsFactory.CreateSettings,
-                    NeatoSettingsFactory.CreateNeatoSettings,
+                    NeatoSettingsFactory.CreateSettings,
                     new DefaultSettingsFactory("twopi").CreateSettings,
                     new DefaultSettingsFactory("circo").CreateSettings,
                     new DefaultSettingsFactory("fdp").CreateSettings,

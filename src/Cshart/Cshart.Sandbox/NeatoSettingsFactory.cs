@@ -7,7 +7,7 @@ namespace Cshart.Sandbox
 {
     static class NeatoSettingsFactory
     {
-        public static BuildRenderSettings CreateNeatoSettings(
+        public static BuildRenderSettings CreateSettings(
             Func<Type, bool> filterTypes,
             Action<Type, DotNode> styleTypeNode)
         {
