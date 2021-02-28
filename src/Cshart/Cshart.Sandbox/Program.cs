@@ -42,33 +42,38 @@ namespace Cshart.Sandbox
             // generic logic
             var b = new BigThing(types, chartName, a.DotExePath);
             b.BuildRenderShow(
-                new BuildRenderSettings(
-                    (ts, cn)
-                        => new Builder(ts, cn)
-                        {
-                            FilterTypes = filterTypes,
-                            StyleTypeNode = styleTypeNode,
-                            CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
-                            EdgeAddingStrategies =
-                                new List<IEdgeAddingStrategy>
-                                {
-                                    new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
-                                    new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
-                                    new AddInterfaceImplementationEdges(new[]
-                                    {
-                                        new EdgeLenAttribute(4)
-                                    }),
-                                    new AddCtorParameterTypeEdges(new[] {new EdgeLenAttribute(3)})
-                                }
-                        },
-                    new CompilerSettings
+                CreateNeatoSettings(filterTypes, styleTypeNode)); 
+        }
+
+        private static BuildRenderSettings CreateNeatoSettings(
+            Func<Type, bool> filterTypes,
+            Action<Type, DotNode> styleTypeNode)
+        {
+            return new BuildRenderSettings(
+                (ts, cn)
+                    => new Builder(ts, cn)
                     {
-                        IsIndented = true,
-                        ShouldFormatStrings = true,
-                        ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
+                        FilterTypes = filterTypes,
+                        StyleTypeNode = styleTypeNode,
+                        CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
+                        EdgeAddingStrategies =
+                            new List<IEdgeAddingStrategy>
+                            {
+                                new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
+                                new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
+                                new AddInterfaceImplementationEdges(
+                                    new[] {new EdgeLenAttribute(4)}),
+                                new AddCtorParameterTypeEdges(new[] {new EdgeLenAttribute(3)})
+                            }
                     },
-                    "svg",
-                    "neato")); 
+                new CompilerSettings
+                {
+                    IsIndented = true,
+                    ShouldFormatStrings = true,
+                    ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
+                },
+                "svg",
+                "neato");
         }
 
         private static Arguments? LoadArguments(string arg)
