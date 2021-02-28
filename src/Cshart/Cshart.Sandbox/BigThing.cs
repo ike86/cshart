@@ -26,7 +26,7 @@ namespace Cshart.Sandbox
         {
             var dotGraph = settings.CreateBuilder(types, chartName).Build();
             var compiledDotGraph = Compile(dotGraph, settings.CompilerSettings);
-            var diagramFileName = $"{chartName}.{settings.RenderFormat}";
+            var diagramFileName = $"{chartName}.{settings.Layout}.{settings.RenderFormat}";
             var dotFileFullPath = OutputDotFile(diagramFileName, compiledDotGraph);
             if (!File.Exists(dotFileFullPath))
             {
