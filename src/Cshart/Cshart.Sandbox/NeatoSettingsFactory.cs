@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using DotNetGraph.Extensions;
+using DotNetGraph.Node;
+
+namespace Cshart.Sandbox
+{
+    static class NeatoSettingsFactory
+    {
+        public static BuildRenderSettings CreateNeatoSettings(
+            Func<Type, bool> filterTypes,
+            Action<Type, DotNode> styleTypeNode)
+        {
+            return new BuildRenderSettings(
+                (ts, cn)
+                    => new Builder(ts, cn)
+                    {
+                        FilterTypes = filterTypes,
+                        StyleTypeNode = styleTypeNode,
+                        CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
+                        EdgeAddingStrategies =
+                            new List<IEdgeAddingStrategy>
+                            {
+                                new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
+                                new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
+                                new AddInterfaceImplementationEdges(
+                                    new[] {new EdgeLenAttribute(4)}),
+                                new AddCtorParameterTypeEdges(new[] {new EdgeLenAttribute(3)})
+                            }
+                    },
+                new CompilerSettings
+                {
+                    IsIndented = true,
+                    ShouldFormatStrings = true,
+                    ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
+                },
+                "svg",
+                "neato");
+        }
+    }
+}

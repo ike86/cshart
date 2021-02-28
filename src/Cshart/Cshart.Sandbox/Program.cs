@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using DotNetGraph.Attributes;
-using DotNetGraph.Extensions;
 using DotNetGraph.Node;
 
 namespace Cshart.Sandbox
@@ -41,43 +40,11 @@ namespace Cshart.Sandbox
 
             // generic logic
             var b = new BigThing(types, chartName, a.DotExePath);
-            Func<Func<Type, bool>,Action<Type, DotNode>, BuildRenderSettings> createSettings =
-                CreateNeatoSettings;
+            Func<Func<Type, bool>,Action<Type, DotNode>, BuildRenderSettings> createSettings = NeatoSettingsFactory.CreateNeatoSettings;
             b.BuildRenderShow(createSettings(filterTypes, styleTypeNode)); 
         }
 
-        private static BuildRenderSettings CreateNeatoSettings(
-            Func<Type, bool> filterTypes,
-            Action<Type, DotNode> styleTypeNode)
-        {
-            return new BuildRenderSettings(
-                (ts, cn)
-                    => new Builder(ts, cn)
-                    {
-                        FilterTypes = filterTypes,
-                        StyleTypeNode = styleTypeNode,
-                        CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
-                        EdgeAddingStrategies =
-                            new List<IEdgeAddingStrategy>
-                            {
-                                new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
-                                new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
-                                new AddInterfaceImplementationEdges(
-                                    new[] {new EdgeLenAttribute(4)}),
-                                new AddCtorParameterTypeEdges(new[] {new EdgeLenAttribute(3)})
-                            }
-                    },
-                new CompilerSettings
-                {
-                    IsIndented = true,
-                    ShouldFormatStrings = true,
-                    ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
-                },
-                "svg",
-                "neato");
-        }
-
-        private static Arguments? LoadArguments(string arg)
+        private static Program.Arguments? LoadArguments(string arg)
         {
             var arguments = File.ReadAllLines(arg);
 
@@ -91,7 +58,7 @@ namespace Cshart.Sandbox
                 return null;
             }
 
-            return new Arguments(pathOfDirectory, assemblyName, dotExePath);
+            return new Program.Arguments(pathOfDirectory, assemblyName, dotExePath);
         }
 
         private record Arguments(string PathOfDirectory, string AssemblyName, string DotExePath);
