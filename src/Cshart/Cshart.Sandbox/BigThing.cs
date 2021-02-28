@@ -37,8 +37,6 @@ namespace Cshart.Sandbox
                 return;
             }
 
-            // var dotFileName = $"{diagramFileName}.txt";
-            // var dotFileFullPath = Path.GetFullPath($".\\{dotFileName}");
             RenderSvg(dotExePath, diagramFileName, dotFileFullPath, layout, format);
 
             OpenDiagram(diagramFileName);
