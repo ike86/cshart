@@ -13,8 +13,6 @@ namespace Cshart.Sandbox
 {
     class Program
     {
-        private const string Format = "svg";
-        
         static void Main(string[] args)
         {
             // specific, user logic
@@ -27,53 +25,50 @@ namespace Cshart.Sandbox
             var assembly = assemblies.First(x => x.GetName().Name == a.AssemblyName);
             var types = TryGetTypes(assembly).ToArray();
             var chartName = assembly.GetName().Name!;
-
-            var neatoCompilerSettings = new CompilerSettings
+            Func<Type, bool> filterTypes = t
+                => t.Name != "QualityControlStore"
+                   && !(t.TryGetNamespace()?.EndsWith(".Tagging.QualityControl")
+                        ?? false);
+            Action<Type, DotNode> styleTypeNode = (type, typeNode) =>
             {
-                IsIndented = true,
-                ShouldFormatStrings = true,
-                ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
-            };
-            Func<IEnumerable<Type>, string, Builder> CreateNeatoBuilder = (ts, cn)
-                => new Builder(ts, cn)
+                if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl")
+                    ?? false)
                 {
-                    FilterTypes =
-                        t => t.Name != "QualityControlStore"
-                             && !(t.TryGetNamespace()?.EndsWith(".Tagging.QualityControl")
-                                  ?? false),
-                    StyleTypeNode = (type, typeNode) =>
-                    {
-                        if (type.TryGetNamespace()?.EndsWith(".Modules.QualityControl")
-                            ?? false)
-                        {
-                            typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
-                            typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
-                        }
-                    },
-                    CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
-                    EdgeAddingStrategies =
-                        new List<IEdgeAddingStrategy>
-                        {
-                            new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
-                            new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
-                            new AddInterfaceImplementationEdges(new[]
-                            {
-                                new EdgeLenAttribute(4)
-                            }),
-                            new AddCtorParameterTypeEdges(new[] {new EdgeLenAttribute(3)})
-                        }
-                };
-            var neatoRenderFormat = Format;
-            var neatoLayout = "neato";
+                    typeNode.FillColor = new DotFillColorAttribute(Color.Goldenrod);
+                    typeNode.Style = new DotNodeStyleAttribute(DotNodeStyle.Filled);
+                }
+            };
 
             // generic logic
             var b = new BigThing(types, chartName, a.DotExePath);
             b.BuildRenderShow(
                 new BuildRenderSettings(
-                    CreateNeatoBuilder,
-                    neatoCompilerSettings,
-                    neatoRenderFormat,
-                    neatoLayout)); 
+                    (ts, cn)
+                        => new Builder(ts, cn)
+                        {
+                            FilterTypes = filterTypes,
+                            StyleTypeNode = styleTypeNode,
+                            CreateTypeNodeAppender = g => new FlatNamespaceTypeNodeAppender(g),
+                            EdgeAddingStrategies =
+                                new List<IEdgeAddingStrategy>
+                                {
+                                    new AddFieldReferenceEdges(new[] {new EdgeLenAttribute(2)}),
+                                    new AddInheritanceEdges(new[] {new EdgeLenAttribute(1)}),
+                                    new AddInterfaceImplementationEdges(new[]
+                                    {
+                                        new EdgeLenAttribute(4)
+                                    }),
+                                    new AddCtorParameterTypeEdges(new[] {new EdgeLenAttribute(3)})
+                                }
+                        },
+                    new CompilerSettings
+                    {
+                        IsIndented = true,
+                        ShouldFormatStrings = true,
+                        ConfigureAttributeCompilers = x => x.Add(new EdgeLenAttributeCompiler())
+                    },
+                    "svg",
+                    "neato")); 
         }
 
         private static Arguments? LoadArguments(string arg)
