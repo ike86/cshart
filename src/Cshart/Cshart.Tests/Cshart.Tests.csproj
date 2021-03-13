@@ -1,11 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <LangVersion>8.0</LangVersion>
-    <Nullable>disable</Nullable>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <RootNamespace>Cshart</RootNamespace>
+
+    <OutputType>Library</OutputType>
+
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -35,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cshart.Sandbox\Cshart.Sandbox.csproj" />
     <ProjectReference Include="..\Cshart\Cshart.csproj" />
   </ItemGroup>
 
