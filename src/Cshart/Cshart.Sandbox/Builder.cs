@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cshart.PostProcessing;
 using DotNetGraph;
 using DotNetGraph.Attributes;
 using DotNetGraph.Node;
@@ -51,6 +52,8 @@ namespace Cshart.Sandbox
 
             AddEdges(assemblyGraph);
 
+            PostProcess(assemblyGraph);
+
             var dotGraph = new DotGraph("foo", directed: true);
             dotGraph.Elements.Add(assemblyGraph);
             return dotGraph;
@@ -90,6 +93,11 @@ namespace Cshart.Sandbox
                     strategy.AddEdges(assemblyGraph, type, typeNode);
                 }
             }
+        }
+
+        private void PostProcess(DotSubGraph assemblyGraph)
+        {
+            _ = new PreferFieldReferenceOverCtorParameter().PostProcess(assemblyGraph);
         }
     }
 }
