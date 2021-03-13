@@ -9,6 +9,8 @@ namespace Cshart.Sandbox
 {
     public class AddFieldReferenceEdges : IEdgeAddingStrategy
     {
+        public static readonly EdgeTypeAttribute FieldReferenceEdgeTypeAttribute =
+            new EdgeTypeAttribute("field reference");
         private readonly IEnumerable<IDotAttribute> attributes;
 
         public AddFieldReferenceEdges() : this(Enumerable.Empty<IDotAttribute>())
@@ -33,6 +35,7 @@ namespace Cshart.Sandbox
                     var edge =
                         new EdgeFactory(attributes, ConfigureEdge)
                             .Create(typeNode, fieldTypeNode);
+                    edge.SetAttribute(FieldReferenceEdgeTypeAttribute);
                     assemblyGraph.Elements.Add(edge);
                 }
             }

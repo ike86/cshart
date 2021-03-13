@@ -10,6 +10,9 @@ namespace Cshart.Sandbox
 {
     public class AddCtorParameterTypeEdges : IEdgeAddingStrategy
     {
+        public static readonly EdgeTypeAttribute CtorParameterEdgeTypeAttribute =
+            new EdgeTypeAttribute("ctor parameter");
+        
         private readonly IEnumerable<IDotAttribute> attributes;
 
         public AddCtorParameterTypeEdges()
@@ -37,6 +40,7 @@ namespace Cshart.Sandbox
                         var edge =
                             new EdgeFactory(attributes, ConfigureEdge)
                                 .Create(typeNode, paramTypeNode);
+                        edge.SetAttribute(CtorParameterEdgeTypeAttribute);
                         assemblyGraph.Elements.Add(edge);
                     }
                 }
