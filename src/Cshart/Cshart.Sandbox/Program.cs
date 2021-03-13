@@ -69,12 +69,6 @@ namespace Cshart.Sandbox
             var assemblyName = arguments[1];
             var dotExePath = arguments[2];
 
-            if (!File.Exists(dotExePath))
-            {
-                Console.WriteLine($"Could not find file {dotExePath}");
-                return null;
-            }
-
             return new Arguments(pathOfDirectory, assemblyName, dotExePath);
         }
 
