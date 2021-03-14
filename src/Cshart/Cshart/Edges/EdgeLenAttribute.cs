@@ -1,7 +1,7 @@
 ﻿using DotNetGraph.Compiler;
 using DotNetGraph.Core;
 
-namespace Cshart
+namespace Cshart.Edges
 {
     public class EdgeLenAttribute : IDotAttribute
     {

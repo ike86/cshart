@@ -1,4 +1,5 @@
 ﻿using AutoFixture.Xunit2;
+using Cshart.Edges;
 using DotNetGraph.Edge;
 using DotNetGraph.Node;
 using DotNetGraph.SubGraph;

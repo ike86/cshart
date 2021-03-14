@@ -6,7 +6,7 @@ using DotNetGraph.Core;
 using DotNetGraph.Edge;
 using DotNetGraph.SubGraph;
 
-namespace Cshart
+namespace Cshart.Edges
 {
     public class AddCtorParameterTypeEdges : IEdgeAddingStrategy
     {

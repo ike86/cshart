@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cshart.Edges;
 using Cshart.PostProcessing;
 using DotNetGraph;
 using DotNetGraph.Attributes;
