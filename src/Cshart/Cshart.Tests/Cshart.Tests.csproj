@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cshart.Sandbox\Cshart.Sandbox.csproj" />
+    <ProjectReference Include="..\Cshart\Cshart.csproj" />
   </ItemGroup>
 
 </Project>

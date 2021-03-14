@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\..\README.md = ..\..\README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cshart.Sandbox", "Cshart.Sandbox\Cshart.Sandbox.csproj", "{A8A332FD-08BC-4511-9E3F-5CFC61922196}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cshart", "Cshart\Cshart.csproj", "{A8A332FD-08BC-4511-9E3F-5CFC61922196}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotNetGraph", "DotNetGraph", "{4297975F-C2CF-4979-92DB-6733DE2494C0}"
 EndProject
