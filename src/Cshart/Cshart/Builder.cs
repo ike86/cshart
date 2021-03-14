@@ -8,7 +8,7 @@ using DotNetGraph.Attributes;
 using DotNetGraph.Node;
 using DotNetGraph.SubGraph;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public class Builder
     {
@@ -22,7 +22,7 @@ namespace Cshart.Sandbox
 
             StyleTypeNode = (_, _) => { };
             CreateTypeNodeAppender = g => new DefaultTypeNodeAppender(g);
-            FilterTypes = t => true;
+            FilterTypes = _ => true;
         }
 
         public Action<Type, DotNode> StyleTypeNode { init; private get; }

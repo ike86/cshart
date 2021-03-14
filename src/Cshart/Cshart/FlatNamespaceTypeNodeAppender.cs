@@ -4,7 +4,7 @@ using DotNetGraph.Attributes;
 using DotNetGraph.Node;
 using DotNetGraph.SubGraph;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public class FlatNamespaceTypeNodeAppender : ITypeNodeAppender
     {

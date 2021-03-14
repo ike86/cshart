@@ -5,7 +5,7 @@ using DotNetGraph.Core;
 using DotNetGraph.Edge;
 using DotNetGraph.SubGraph;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public class AddInterfaceImplementationEdges : IEdgeAddingStrategy
     {

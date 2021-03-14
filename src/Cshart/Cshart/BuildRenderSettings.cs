@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using DotNetGraph.Extensions;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     internal class BuildRenderSettings
     {

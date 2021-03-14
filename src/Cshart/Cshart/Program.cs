@@ -8,7 +8,7 @@ using System.Reflection;
 using DotNetGraph.Attributes;
 using DotNetGraph.Node;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     delegate BuildRenderSettings BuildRenderSettingsFactory(
         Func<Type, bool> filterTypes,
@@ -61,7 +61,7 @@ namespace Cshart.Sandbox
             }
         }
 
-        private static Arguments? LoadArguments(string arg)
+        private static Arguments LoadArguments(string arg)
         {
             var arguments = File.ReadAllLines(arg);
 

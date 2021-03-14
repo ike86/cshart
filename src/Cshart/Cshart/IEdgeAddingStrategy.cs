@@ -2,7 +2,7 @@
 using DotNetGraph.Core;
 using DotNetGraph.SubGraph;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public interface IEdgeAddingStrategy
     {

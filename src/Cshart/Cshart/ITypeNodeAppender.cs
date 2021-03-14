@@ -1,7 +1,7 @@
 ﻿using System;
 using DotNetGraph.Node;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public interface ITypeNodeAppender
     {

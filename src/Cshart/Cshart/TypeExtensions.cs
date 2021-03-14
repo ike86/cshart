@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public static class TypeExtensions
     {

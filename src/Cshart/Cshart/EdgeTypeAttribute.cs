@@ -1,6 +1,6 @@
 ﻿using DotNetGraph.Core;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public class EdgeTypeAttribute : IDotAttribute
     {

@@ -7,7 +7,7 @@ using System.Linq;
 using DotNetGraph;
 using DotNetGraph.Extensions;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     class BigThing
     {

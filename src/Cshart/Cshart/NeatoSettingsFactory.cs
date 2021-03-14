@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DotNetGraph.Extensions;
 using DotNetGraph.Node;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     static class NeatoSettingsFactory
     {

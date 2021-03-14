@@ -4,7 +4,7 @@ using System.Linq;
 using DotNetGraph.Core;
 using DotNetGraph.Edge;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public class EdgeFactory
     {

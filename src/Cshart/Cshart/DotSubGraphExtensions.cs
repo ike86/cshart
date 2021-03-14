@@ -6,7 +6,7 @@ using DotNetGraph.Core;
 using DotNetGraph.Node;
 using DotNetGraph.SubGraph;
 
-namespace Cshart.Sandbox
+namespace Cshart
 {
     public static class DotSubGraphExtensions
     {
