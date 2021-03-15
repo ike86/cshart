@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cshart.Edges;
+using Cshart.Nodes;
 using DotNetGraph.Extensions;
 using DotNetGraph.Node;
 

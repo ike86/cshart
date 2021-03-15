@@ -2,7 +2,7 @@
 using DotNetGraph.Node;
 using DotNetGraph.SubGraph;
 
-namespace Cshart
+namespace Cshart.Nodes
 {
     public class DefaultTypeNodeAppender : ITypeNodeAppender
     {
